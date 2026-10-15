@@ -1,0 +1,58 @@
+name: kadr
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: kadr
+      POSTGRES_PASSWORD: kadr
+      POSTGRES_DB: kadr
+    ports:
+      - '5440:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kadr -d kadr']
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  api:
+    profiles: [full]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgres://kadr:kadr@postgres:5432/kadr
+    ports:
+      - '4000:4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  admin:
+    profiles: [full]
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    ports:
+      - '5180:80'
+
+  gallery:
+    profiles: [full]
+    build:
+      context: .
+      dockerfile: apps/gallery/Dockerfile
+    ports:
+      - '5181:80'
+
+  portfolio:
+    profiles: [full]
+    build:
+      context: .
+      dockerfile: apps/portfolio/Dockerfile
+    ports:
+      - '4321:80'
+
+volumes:
+  postgres-data:
