@@ -6,7 +6,9 @@ const config = loadConfig();
 const db = createDb(config.databaseUrl);
 const app = buildApp(db);
 
-db.$client.on('error', (err) => app.log.error(err, 'pg pool error'));
+db.$client.on('error', (err) => {
+  app.log.error(err, 'pg pool error');
+});
 
 try {
   await app.listen({ host: config.host, port: config.port });

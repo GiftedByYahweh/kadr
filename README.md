@@ -47,6 +47,7 @@ reload.
 | `pnpm docker:up`   | Build and run the whole system in Docker   |
 | `pnpm docker:down` | Stop the whole system                      |
 | `pnpm typecheck`   | Type-check all packages                    |
+| `pnpm lint`        | Lint all packages with ESLint              |
 | `pnpm format`      | Format code with Prettier                  |
 
 ## Ports
