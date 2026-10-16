@@ -7,14 +7,12 @@ const {
   shape = 'natural',
   caption = '',
   ratio = 0,
-  overlayPinned,
 } = defineProps<{
   src: string;
   alt: string;
   shape?: PhotoCardShape;
   caption?: string;
   ratio?: number;
-  overlayPinned?: boolean;
 }>();
 
 const loaded = ref(false);
@@ -34,11 +32,7 @@ const loaded = ref(false);
         loading="lazy"
         @load="loaded = true"
       />
-      <div
-        v-if="$slots['default']"
-        class="photo-card__overlay"
-        :class="{ 'photo-card__overlay--pinned': overlayPinned }"
-      >
+      <div v-if="$slots['default']" class="photo-card__overlay">
         <slot />
       </div>
     </div>

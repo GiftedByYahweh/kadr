@@ -20,7 +20,6 @@ const { open } = useViewer();
         :src="item.previewUrl"
         :alt="item.originalName"
         :ratio="item.width / item.height"
-        :overlay-pinned="item.likedAt !== null || item.comments.length > 0"
         @click="open(item.id)"
       >
         <span

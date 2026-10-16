@@ -5,8 +5,8 @@ import { GalleryFilter, useGallery } from '../../composables/useGallery.ts';
 const { filter, summary, setFilter } = useGallery();
 
 const filters = [
-  { value: GalleryFilter.ALL, label: 'all' },
-  { value: GalleryFilter.LIKED, label: 'selected ♥' },
+  { value: GalleryFilter.ALL, label: 'all', withHeart: false },
+  { value: GalleryFilter.LIKED, label: 'selected', withHeart: true },
 ];
 </script>
 
@@ -33,9 +33,21 @@ const filters = [
           @click="setFilter(option.value)"
         >
           {{ option.label }}
+          <span
+            v-if="option.withHeart"
+            class="icon icon--s"
+            :class="
+              filter === option.value
+                ? 'icon--heart-filled text-accent'
+                : 'icon--heart'
+            "
+          />
         </button>
       </nav>
-      <a class="text-upper text-muted text-hover">download all →</a>
+      <a class="toolbar__download text-upper text-muted text-hover">
+        download all
+        <span class="icon icon--s icon--download" />
+      </a>
     </div>
   </header>
 </template>
@@ -50,7 +62,7 @@ const filters = [
 }
 
 .toolbar__content {
-  max-width: calc(var(--content-max-width) + 2 * var(--page-padding));
+  max-width: calc(var(--content-max-width-wide) + 2 * var(--page-padding));
   margin: 0 auto;
   padding: var(--space-4) var(--page-padding);
   display: flex;
@@ -70,6 +82,13 @@ const filters = [
   display: flex;
   gap: var(--space-5);
   margin-left: auto;
+}
+
+.toolbar__download {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
 }
 
 .toolbar__filter {

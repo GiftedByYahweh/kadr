@@ -289,9 +289,6 @@ importers:
       '@kadr/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-      '@kadr/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       astro:
         specifier: ^7.3.8
         version: 7.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)

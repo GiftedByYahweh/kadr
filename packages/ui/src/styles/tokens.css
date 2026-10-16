@@ -15,6 +15,7 @@
   --color-surface: var(--palette-grey-lightest);
   --color-text-muted: var(--palette-grey-mid);
   --color-overlay: rgb(15 11 10 / 40%);
+  --color-scrim: rgb(0 0 0 / 35%);
   --color-header-blur: rgb(255 255 255 / 80%);
   --color-inverse-bg: var(--palette-black);
   --color-inverse-text: var(--palette-white);
@@ -40,21 +41,24 @@
   --space-7: 45px;
 
   --content-max-width: 1320px;
+  --content-max-width-wide: 1920px;
   --page-padding: var(--space-7);
   --header-height: 120px;
   --grid-gap: var(--space-5);
   --grid-gap-dense: var(--space-2);
-  --photo-row-height: 280px;
+  --photo-row-height: 360px;
+  --photo-scrim-height: 96px;
   --viewer-bar-height: 64px;
   --panel-width: 360px;
 
   --radius: 2px;
   --icon-size: 24px;
-  --icon-shadow: drop-shadow(0 0 2px rgb(0 0 0 / 45%));
+  --icon-size-s: 16px;
 
   --duration-press: 160ms;
   --duration-base: 200ms;
   --duration-slow: 300ms;
+  --stagger-step: 50ms;
   --ease: ease;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -71,6 +75,7 @@
     --font-size-display: 32px;
     --page-padding: var(--space-5);
     --header-height: 80px;
-    --photo-row-height: 160px;
+    --photo-row-height: 240px;
+    --grid-gap-dense: calc(var(--space-1) * 1.5);
   }
 }

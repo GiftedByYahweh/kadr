@@ -30,6 +30,9 @@
 }
 
 .btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: 0;
   border: none;
   background: none;

@@ -117,10 +117,21 @@ function bindEvents(pswp: PhotoSwipe) {
   });
 }
 
+function animateNavigation(pswp: PhotoSwipe) {
+  if (matchMedia(REDUCED_MOTION_QUERY).matches) return;
+  pswp.next = () => {
+    pswp.mainScroll.moveIndexBy(1, true);
+  };
+  pswp.prev = () => {
+    pswp.mainScroll.moveIndexBy(-1, true);
+  };
+}
+
 function open(startIndex: number) {
   const pswp = createInstance(startIndex);
   registerHosts(pswp);
   bindEvents(pswp);
+  animateNavigation(pswp);
   pswp.init();
   instance.value = pswp;
 }

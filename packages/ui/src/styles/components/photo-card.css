@@ -37,24 +37,64 @@
 
 .photo-card__overlay {
   position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
+  top: 0;
+  right: 0;
+  left: 0;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
+  padding: var(--space-2);
   color: var(--color-inverse-text);
-  filter: var(--icon-shadow);
+}
+
+.photo-card__overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--photo-scrim-height);
+  background: linear-gradient(to bottom, var(--color-scrim), transparent);
+  pointer-events: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .photo-card__overlay {
+  .photo-card__overlay::before {
     opacity: 0;
     transition: opacity var(--duration-base) var(--ease-out);
   }
 
-  .photo-card:hover .photo-card__overlay,
-  .photo-card__overlay:focus-within,
-  .photo-card__overlay--pinned {
+  .photo-card__overlay > * {
+    opacity: 0;
+    translate: 0 calc(var(--space-1) * -1);
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      translate var(--duration-base) var(--ease-out),
+      color var(--duration-base) var(--ease),
+      transform var(--duration-press) var(--ease-out);
+  }
+
+  .photo-card:hover .photo-card__overlay::before,
+  .photo-card__overlay:focus-within::before {
     opacity: 1;
+    transition-duration: var(--duration-slow);
+  }
+
+  .photo-card:hover .photo-card__overlay > *,
+  .photo-card__overlay:focus-within > * {
+    opacity: 1;
+    translate: none;
+    transition-duration: var(--duration-slow);
+    transition-delay: var(--stagger-step);
+  }
+
+  .photo-card:hover .photo-card__overlay > * + *,
+  .photo-card__overlay:focus-within > * + * {
+    transition-delay: calc(var(--stagger-step) * 2);
+  }
+}
+
+@media (hover: none) {
+  .photo-card__overlay {
+    display: none;
   }
 }
 

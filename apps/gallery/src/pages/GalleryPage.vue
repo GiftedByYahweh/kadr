@@ -19,7 +19,7 @@ onMounted(load);
       :cover-url="gallery.coverUrl"
     />
     <GalleryToolbar id="photos" />
-    <main class="page">
+    <main class="page page--wide">
       <GalleryGrid />
     </main>
     <GalleryViewer />

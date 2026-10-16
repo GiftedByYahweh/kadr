@@ -4,3 +4,13 @@
   margin: 0 auto;
   padding: var(--page-padding);
 }
+
+.page--wide {
+  max-width: calc(var(--content-max-width-wide) + 2 * var(--page-padding));
+}
+
+@media (max-width: 800px) {
+  .page--wide {
+    padding: var(--space-3) var(--grid-gap-dense);
+  }
+}

@@ -9,6 +9,11 @@
   mask-repeat: no-repeat;
 }
 
+.icon--s {
+  width: var(--icon-size-s);
+  height: var(--icon-size-s);
+}
+
 .icon--close {
   mask-image: url('../../icons/close.svg');
 }

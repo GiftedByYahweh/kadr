@@ -48,12 +48,15 @@ Extracted from `photographer_portfolio/portfolio/src` (`styles/global.css`,
    - filter text links `all` / `selected ♥`;
    - `download all →`.
 3. **Grid** — justified rows (like Google Photos): every photo keeps its
-   aspect ratio, rows have equal height (`--photo-row-height`, 280px desktop /
-   160px mobile) and fill the full width, order stays left-to-right. Pure CSS:
+   aspect ratio, rows have equal height (`--photo-row-height`, 360px desktop /
+   240px mobile, so two portrait frames share a row on a phone) and fill the full width, order stays left-to-right. Pure CSS:
    each item grows proportionally to its ratio. No captions in the grid (file
-   names only in the viewer). Heart in the bottom-right corner: on mouse
-   devices visible on hover, liked hearts always visible; on touch always
-   visible.
+   names only in the viewer). The gallery uses the wide page container
+   (`.page--wide`, up to 1920px) instead of the portfolio's 1320px. On phones
+   the feed is almost edge to edge: 6px side padding and 6px gaps. Top-right heart and comment count: on mouse
+   devices they appear only on hover together with a soft top-down gradient
+   (liked photos too). On touch devices the grid shows no icons at all —
+   liking and commenting happen in the viewer.
 4. **Viewer** — light (white background, like the site), PhotoSwipe 5 themed
    with our tokens: opens by zooming from the thumbnail, swipe with physics,
    pinch/double-tap zoom, keyboard arrows, neighbour preloading. Top bar:
@@ -106,7 +109,8 @@ names, so the inverted viewer just swaps tokens.
 - Icons are one set of thin line SVGs (24px, 1.5px stroke) in
   `packages/ui/src/icons/`, drawn by us. They are painted through CSS
   `mask-image` (`.icon .icon--heart`), so they take `currentColor`. On photos
-  they get a soft shadow (`--icon-shadow`) to stay readable on light frames.
+  they sit on a soft top-down dark gradient (`--color-scrim`) so they stay
+  readable on light frames.
 - References for patterns: Pixieset / Pic-Time / Lightroom shared albums
   (heart for selection, comments inside the viewer).
 
