@@ -15,7 +15,7 @@ Portfolio website and client galleries for a photographer.
 | ----------------- | ---------------------------- | ------------------------------------------- |
 | `apps/api`        | Backend API                  | Fastify, Drizzle ORM, PostgreSQL            |
 | `apps/admin`      | Admin panel for photographer | Vue 3, vue-router, TanStack Query, PrimeVue |
-| `apps/gallery`    | Client gallery               | Vue 3, vue-router                           |
+| `apps/gallery`    | Client gallery               | Vue 3                                       |
 | `apps/portfolio`  | Public portfolio site        | Astro (static)                              |
 | `packages/shared` | Shared types and validation  | TypeScript, Zod                             |
 | `packages/ui`     | Shared Vue components        | Vue 3                                       |
@@ -30,9 +30,7 @@ Portfolio website and client galleries for a photographer.
 
 ```sh
 pnpm install
-cp apps/api/.env.example apps/api/.env
-cp apps/admin/.env.example apps/admin/.env
-cp apps/gallery/.env.example apps/gallery/.env
+cp .env.example .env
 pnpm dev
 ```
 

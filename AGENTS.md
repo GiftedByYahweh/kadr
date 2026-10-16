@@ -57,7 +57,7 @@
 | ----------------- | ---------------------------- | ------------------------------------------- |
 | `apps/api`        | Backend API                  | Fastify, Drizzle ORM, PostgreSQL            |
 | `apps/admin`      | Admin panel for photographer | Vue 3, vue-router, TanStack Query, PrimeVue |
-| `apps/gallery`    | Client gallery               | Vue 3, vue-router                           |
+| `apps/gallery`    | Client gallery               | Vue 3 (single page, no router)              |
 | `apps/portfolio`  | Public portfolio site        | Astro (static)                              |
 | `packages/shared` | Shared types, DTOs, Zod      | TypeScript, Zod                             |
 | `packages/ui`     | Shared Vue components        | Vue 3 (no PrimeVue)                         |
@@ -76,7 +76,7 @@
 - **Full stack in Docker (`pnpm docker:up` / `pnpm docker:down`)**: apps are in the compose profile `full`. `api` runs via `node --import tsx` with production dependencies only, as the `node` user. `admin`, `gallery`, `portfolio` are static builds served by nginx.
 - `pnpm dev` and `pnpm docker:up` use the same host ports; run one at a time.
 - Ports: api `4000`, admin `5180`, gallery `5181`, portfolio `4321`, PostgreSQL `5440`. Do not change them without a reason: ports `3000`, `5173`–`5174`, `5432`–`5434` are taken by other local projects.
-- `apps/api/.env` is created from `apps/api/.env.example` and is never committed.
+- All environment variables live in one root `.env` (created from `.env.example`, never committed). It is read by the api (`--env-file`), drizzle-kit, the Vite configs of admin and gallery, and docker-compose.
 - Production target: own server with Docker (cron jobs needed), PostgreSQL in Docker on that server.
 
 ---
@@ -263,7 +263,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 - `src/services/` — business operations over the API, throwing user-friendly errors.
 - `src/composables/` — shared reactive state and logic.
 - `src/components/` — `shared/`, `features/`, `widgets/`.
-- `src/layouts/`, `src/pages/`, `src/router/`.
+- `src/layouts/`, `src/pages/`, `src/router/` (admin only; gallery is a single page without vue-router and reads the gallery token from `location.pathname`).
 
 ### 5.2 State
 
@@ -274,10 +274,13 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 5.3 Components & Styling
 
+- Design reference: `docs/design.md` (gallery follows the portfolio's visual language).
+- All design values are CSS custom properties from `@kadr/ui/styles.css` (`packages/ui/src/styles/tokens.css`): colors (semantic names: `--color-bg`, `--color-text`, `--color-accent`, ...), fonts, font sizes, spacing, layout, radius, motion, z-index. Never hardcode colors, fonts or spacing in components; add a token instead.
+- Shared visual components are **CSS first**: BEM classes in `packages/ui/src/styles/components/*.css` (`.photo-card`, `.photo-card__frame`, `.btn--primary`). The portfolio (Astro) and the Vue apps use the same classes.
+- Vue components in `@kadr/ui` exist only when they remove duplicated markup or add behaviour, contain minimal script and no styles of their own beyond the shared classes. Plain elements with a class (e.g. `<button class="btn btn--primary">`) do not get a Vue wrapper.
+- App-specific layout lives in `<style scoped>` and uses only tokens. Global CSS only in `@kadr/ui` (tokens, base, typography and layout utilities, shared components).
 - `admin` uses PrimeVue components for tables, forms, dialogs and toasts. Do not reimplement what PrimeVue provides.
-- Components shared by `admin` and `gallery` (photo grid, lightbox, photo card) live in `@kadr/ui`.
-- Component styles in `<style scoped>`. Global CSS only for custom properties, resets and widely shared utility classes.
-- DRY: duplicated templates become components; duplicated CSS becomes a global class.
+- DRY: duplicated templates become components; duplicated CSS becomes a shared class in `@kadr/ui`.
 
 ---
 

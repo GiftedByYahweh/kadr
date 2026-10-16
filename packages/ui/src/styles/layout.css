@@ -1,0 +1,6 @@
+.page {
+  width: 100%;
+  max-width: calc(var(--content-max-width) + 2 * var(--page-padding));
+  margin: 0 auto;
+  padding: var(--page-padding);
+}

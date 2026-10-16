@@ -1,0 +1,101 @@
+.comments-panel {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.viewer-panel-enter-active {
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.viewer-panel-leave-active {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.comments-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+}
+
+.comments-panel__list {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: 0 var(--space-5) var(--space-4);
+}
+
+.comments-panel__item {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.comments-panel__meta {
+  justify-self: end;
+  font-size: var(--font-size-s);
+  color: var(--color-text-muted);
+}
+
+.comments-panel__empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6) var(--space-5);
+}
+
+.comments-panel__form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-5);
+  border-top: 1px solid var(--color-muted);
+}
+
+.comments-panel__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) 0;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+@media (min-width: 801px) {
+  .comments-panel {
+    top: var(--viewer-bar-height);
+    right: 0;
+    bottom: 0;
+    width: var(--panel-width);
+    border-left: 1px solid var(--color-muted);
+  }
+
+  .viewer-panel-enter-from,
+  .viewer-panel-leave-to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 800px) {
+  .comments-panel {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 60vh;
+    border-top: 1px solid var(--color-muted);
+  }
+
+  .viewer-panel-enter-from,
+  .viewer-panel-leave-to {
+    transform: translateY(100%);
+  }
+}

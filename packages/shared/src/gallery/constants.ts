@@ -14,3 +14,5 @@ export const GalleryMediaStatus = {
 
 export type GalleryMediaStatus =
   (typeof GalleryMediaStatus)[keyof typeof GalleryMediaStatus];
+
+export const GALLERY_COMMENT_MAX_LENGTH = 2000;

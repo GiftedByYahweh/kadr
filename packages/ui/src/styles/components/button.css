@@ -1,0 +1,41 @@
+.btn {
+  padding: 10px 30px;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    opacity var(--duration-base) var(--ease),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    opacity: var(--hover-dim);
+  }
+}
+
+.btn:active,
+.btn-text:active {
+  transform: scale(var(--press-scale));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: var(--disabled-dim);
+}
+
+.btn-text {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  transition: transform var(--duration-press) var(--ease-out);
+}

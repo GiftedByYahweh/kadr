@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles/index.css"
   },
   "scripts": {
     "typecheck": "vue-tsc"
@@ -14,5 +15,9 @@
   "devDependencies": {
     "vue": "^3.5.44",
     "vue-tsc": "^3.3.13"
+  },
+  "dependencies": {
+    "@kadr/shared": "workspace:*",
+    "photoswipe": "^5.4.4"
   }
 }

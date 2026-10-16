@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import App from './App.vue';
-import { router } from './router.ts';
+import '@kadr/ui/styles.css';
+import GalleryPage from './pages/GalleryPage.vue';
 
-createApp(App).use(router).mount('#app');
+createApp(GalleryPage).mount('#app');

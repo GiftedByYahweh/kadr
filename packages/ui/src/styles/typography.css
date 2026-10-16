@@ -1,0 +1,44 @@
+.text-upper {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-caps);
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-lead {
+  font-size: var(--font-size-lead);
+  line-height: var(--line-height-tight);
+}
+
+.text-l {
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-tight);
+}
+
+.text-display {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display);
+  font-weight: 400;
+  line-height: var(--line-height-base);
+}
+
+.text-hover {
+  cursor: pointer;
+  transition: color var(--duration-base) var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text-hover:hover {
+    color: var(--color-accent);
+  }
+}

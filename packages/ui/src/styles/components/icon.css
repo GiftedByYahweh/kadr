@@ -1,0 +1,98 @@
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: currentColor;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+.icon--close {
+  mask-image: url('../../icons/close.svg');
+}
+
+.icon--comment {
+  mask-image: url('../../icons/comment.svg');
+}
+
+.icon--download {
+  mask-image: url('../../icons/download.svg');
+}
+
+.icon--send {
+  mask-image: url('../../icons/send.svg');
+}
+
+.icon--chevron-left {
+  mask-image: url('../../icons/chevron-left.svg');
+}
+
+.icon--chevron-right {
+  mask-image: url('../../icons/chevron-right.svg');
+}
+
+.icon--heart {
+  mask-image: url('../../icons/heart.svg');
+}
+
+.icon--heart-filled {
+  mask-image: url('../../icons/heart-filled.svg');
+}
+
+.icon--pop {
+  animation: icon-pop var(--duration-slow) var(--ease-out);
+}
+
+@keyframes icon-pop {
+  from {
+    transform: scale(0.85);
+  }
+
+  60% {
+    transform: scale(1.12);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.icon-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    color var(--duration-base) var(--ease),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.icon-button:active {
+  transform: scale(0.9);
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: var(--disabled-dim);
+}
+
+.icon-button--active {
+  color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .icon-button:not(:disabled):hover {
+    color: var(--color-accent);
+  }
+}
+
+.icon-button__badge {
+  font-size: var(--font-size-s);
+}
