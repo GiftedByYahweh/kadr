@@ -1,18 +1,45 @@
-import { buildApp } from './app.ts';
-import { loadConfig } from './config.ts';
-import { createDb } from './db/client.ts';
+import type { FastifyInstance } from 'fastify';
+import { loadAppConfig } from './config.ts';
+import { appContainer } from './container/index.ts';
+import { ConsoleLogger } from './logger/index.ts';
+import { buildServer } from './server.ts';
 
-const config = loadConfig();
-const db = createDb(config.databaseUrl);
-const app = buildApp(db);
+const SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
 
-db.$client.on('error', (err) => {
-  app.log.error(err, 'pg pool error');
-});
+const config = loadAppConfig();
+const logger = new ConsoleLogger();
 
-try {
-  await app.listen({ host: config.host, port: config.port });
-} catch (err) {
-  app.log.error(err);
-  process.exit(1);
+function registerShutdownHandlers(server: FastifyInstance): void {
+  for (const signal of SHUTDOWN_SIGNALS) {
+    process.on(signal, () => {
+      void (async () => {
+        logger.info('Server', `Received ${signal}, shutting down gracefully`);
+        try {
+          await server.close();
+          logger.info('Server', 'Server closed gracefully');
+          process.exit(0);
+        } catch (err: unknown) {
+          logger.error('Server', 'Error during graceful shutdown', err);
+          process.exit(1);
+        }
+      })();
+    });
+  }
 }
+
+async function bootstrap(): Promise<void> {
+  const container = appContainer(config, logger);
+  const server = await buildServer({ container, config, logger });
+  registerShutdownHandlers(server);
+
+  await server.listen({ port: config.port, host: config.host });
+  logger.info(
+    'Server',
+    `Application running on http://${config.host}:${String(config.port)}`,
+  );
+}
+
+bootstrap().catch((err: unknown) => {
+  logger.error('Server', 'Failed to start server', err);
+  process.exit(1);
+});

@@ -90,9 +90,11 @@ src/
 ├── modules/<feature>/   # Business feature modules (vertical slices)
 ├── container/           # Composition root: wires modules with infrastructure
 ├── db/                  # Drizzle client, migrations, unit of work
-├── common/              # Cross-cutting: errors, use case types, guards, utils
-├── server.ts            # Fastify instance, plugins, error handler
-└── main.ts              # Entry point
+├── common/              # Cross-cutting: errors, response helpers, guards, utils
+├── logger/              # Logger port + ConsoleLogger
+├── config.ts            # loadAppConfig(): typed config from env via requireEnv
+├── server.ts            # buildServer(): Fastify instance, hooks, error handlers, routes
+└── main.ts              # Entry: config, container, server, listen, graceful shutdown
 ```
 
 ```
@@ -191,13 +193,20 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 4.7 Routes
 
-- All API route paths are declared once in `@kadr/shared` (`ApiRoutes`) and used by both Fastify and frontend transports. No inline or module-local route strings.
-- The API has three zones with different auth: `admin` (photographer session), `public` (portfolio build, read-only), `gallery` (gallery link + visitor identity).
+- All API route paths are declared once in `@kadr/shared` (`api/routes/`) and used by both Fastify and frontend transports. No inline or module-local route strings.
+- Routes are split by zone, one constant per zone, each with its own `prefix`:
+  - `SystemApiRoutes` (`system.ts`) — service routes outside any zone (`health`); `API_PREFIX` also lives here;
+  - `AdminApiRoutes` (`admin.ts`) — `/api/admin/*`, photographer session;
+  - `GalleryApiRoutes` (`gallery.ts`) — `/api/gallery/*`, gallery link access;
+  - `PublicApiRoutes` (`public.ts`) — `/api/public/*`, added with the portfolio.
+- The API has three zones with different auth: `admin` (photographer session), `gallery` (secret gallery link), `public` (portfolio build, read-only).
 
 ### 4.8 Isolation & Dependency Injection
 
 - Fastify is used only in `src/server.ts`, `src/main.ts` and `*.routes.ts`. `FastifyRequest`/`FastifyReply` never reach use cases, services or repositories.
 - Route schemas live in `*.schema.ts`, never inline in handlers.
+- Env variables are read only in `src/config.ts` via `requireEnv` from `@kadr/shared` (also used in Vite configs); the rest of the code receives `AppConfig`.
+- Logging goes through the `Logger` port (`src/logger/`); Fastify's built-in logger is off.
 - Manual DI in `src/container/`: `infrastructure.container.ts`, `repositories.container.ts`, `<feature>.container.ts`, `app.container.ts`.
 - Mappers (`mappers/<name>.mapper.ts`) are plain functions with two jobs:
   - DB row -> entity (`toGallery(row)`), used only by `drizzle-*.repository.ts`;
@@ -216,7 +225,11 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 - Entities (`entities/*.entity.ts`) are business models with zero ORM imports.
 - Every method of a `drizzle-<name>.repository.ts` returns its result through the row -> entity mapper. Never return a Drizzle row typed as an entity: TypeScript accepts it, but all extra columns (e.g. `passwordHash`) travel along at runtime.
 - Row types (`typeof table.$inferSelect`) are used only in `drizzle-*.repository.ts` and in row -> entity mappers.
-- Transactions via `UnitOfWork` on top of `AsyncLocalStorage`.
+- Database access goes through `DbProvider` (`src/db/db.provider.ts`); repositories always query via `dbProvider.current()`, which returns the active transaction or the pool.
+- Transactions via `UnitOfWork` (`src/db/unit-of-work.ts`) on top of `AsyncLocalStorage` (`src/db/tx-context.ts`). Repositories never receive a transaction as a parameter.
+- A nested `unitOfWork.run` joins the outer transaction (no savepoints): if anything inside fails, everything rolls back.
+- Only database queries go inside `unitOfWork.run`; side effects that cannot be rolled back (file storage, emails) run after it succeeds.
+- Postgres constraint errors are detected with helpers from `src/db/pg-errors.ts` (e.g. `isUniqueViolation`), not by parsing messages.
 - The `pg` pool MUST have an `error` listener, otherwise a dropped idle connection crashes the process.
 
 ### 4.10 Errors & Validation
@@ -246,7 +259,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 5.1 Layers
 
-- `src/api/` — transport: typed fetch wrapper (`credentials: "include"`, JSON handling, normalized errors) and domain API functions using `ApiRoutes`.
+- `src/api/` — domain API functions on top of `httpTransport` from `@kadr/shared/http`, using the app's zone routes (`AdminApiRoutes` in admin, `GalleryApiRoutes` in gallery).
 - `src/services/` — business operations over the API, throwing user-friendly errors.
 - `src/composables/` — shared reactive state and logic.
 - `src/components/` — `shared/`, `features/`, `widgets/`.
@@ -283,5 +296,5 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 4. `pnpm format:check` — passes.
 5. Verify behaviour empirically (run the app or the endpoint), not only by reading code.
 6. No comments, no inline SVG, no `enum`, no unexplained magic values.
-7. One use case per route; route paths only from `ApiRoutes`.
+7. One use case per route; route paths only from the zone route constants in `@kadr/shared` (`api/routes/`).
 8. No new packages without the user's confirmation.

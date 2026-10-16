@@ -1,13 +1,16 @@
-const required = (name: string) => {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing env variable: ${name}`);
-  return value;
+import { requireEnv } from '@kadr/shared';
+
+export const loadAppConfig = () => {
+  const env = process.env;
+
+  return {
+    port: Number(requireEnv(env, 'PORT')),
+    host: requireEnv(env, 'HOST'),
+    isProduction: env['NODE_ENV'] === 'production',
+    db: {
+      url: requireEnv(env, 'DATABASE_URL'),
+    },
+  };
 };
 
-export const loadConfig = () => ({
-  host: process.env['HOST'] ?? '127.0.0.1',
-  port: Number(process.env['PORT'] ?? 4000),
-  databaseUrl: required('DATABASE_URL'),
-});
-
-export type Config = ReturnType<typeof loadConfig>;
+export type AppConfig = ReturnType<typeof loadAppConfig>;

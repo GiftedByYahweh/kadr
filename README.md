@@ -31,6 +31,8 @@ Portfolio website and client galleries for a photographer.
 ```sh
 pnpm install
 cp apps/api/.env.example apps/api/.env
+cp apps/admin/.env.example apps/admin/.env
+cp apps/gallery/.env.example apps/gallery/.env
 pnpm dev
 ```
 
