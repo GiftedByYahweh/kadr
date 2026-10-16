@@ -89,7 +89,7 @@
 src/
 ├── modules/<feature>/   # Business feature modules (vertical slices)
 ├── container/           # Composition root: wires modules with infrastructure
-├── db/                  # Drizzle client, schema, migrations, unit of work
+├── db/                  # Drizzle client, migrations, unit of work
 ├── common/              # Cross-cutting: errors, use case types, guards, utils
 ├── server.ts            # Fastify instance, plugins, error handler
 └── main.ts              # Entry point
@@ -102,6 +102,8 @@ src/modules/<feature>/
 ├── repositories/
 │   ├── <name>.repository.ts         # Repository port interface
 │   └── drizzle-<name>.repository.ts # Drizzle implementation
+├── tables/
+│   └── <name>.table.ts              # Drizzle table definition
 ├── mappers/
 │   └── <name>.mapper.ts             # DB row -> entity, entity -> DTO
 ├── use-cases/
@@ -176,7 +178,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 - Functions: no `create` prefix (`drizzleGalleryRepository`, `galleryRoutes`, `galleryUseCases`, `toGalleryDto`, `successResponse`). A use case may start with `create` only when the domain action is creating something (`createGallery`).
 - Stateful classes: `DbProvider`, `R2FileStorage implements FileStorage`, `ConsoleLogger implements Logger`.
-- Files in `apps/api` use kebab-case with role suffixes: `.service.ts`, `.use-case.ts`, `.deps.ts`, `.repository.ts`, `drizzle-<name>.repository.ts`, `.schema.ts`, `.guard.ts`, `.routes.ts`, `.mapper.ts`, `.entity.ts`, `.provider.ts`, `.error.ts`, `.context.ts`. camelCase file names are forbidden.
+- Files in `apps/api` use kebab-case with role suffixes: `.service.ts`, `.use-case.ts`, `.deps.ts`, `.table.ts`, `.repository.ts`, `drizzle-<name>.repository.ts`, `.schema.ts`, `.guard.ts`, `.routes.ts`, `.mapper.ts`, `.entity.ts`, `.provider.ts`, `.error.ts`, `.context.ts`. camelCase file names are forbidden.
 
 ### 4.6 Response Envelope
 
@@ -205,8 +207,11 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 4.9 Database
 
-- Drizzle and `pg` are used only in `src/db/` and `drizzle-*.repository.ts`.
-- Schema in `src/db/schema/*.ts`, re-exported from `src/db/schema/index.ts`. Migrations are generated with `drizzle-kit` and committed. Never use `drizzle-kit push`.
+- Drizzle and `pg` are used only in `src/db/`, `tables/*.table.ts`, `drizzle-*.repository.ts` and row -> entity mappers.
+- Tables live in the module that owns them: `src/modules/<feature>/tables/<name>.table.ts`, one file per table; exports use the `Table` suffix (`galleriesTable`, `galleryMediaTable`). `drizzle.config.ts` collects them with the glob `./src/modules/*/tables/*.table.ts`.
+- A module may import another module's table only to declare a foreign key (e.g. `galleriesTable.userId` → `usersTable`), never its repositories or use cases.
+- Columns with a fixed set of values (statuses, types) are Postgres enums: `pgEnum('<name>', pgEnumValues(Dictionary))`, where the dictionary is a `const ... as const` from `@kadr/shared` and `pgEnumValues` lives in `src/db/pg-enum-values.ts`. The enum is exported from the table file with the `Enum` suffix (`galleryStatusEnum`). Never `text().$type<...>()` for such columns.
+- Migrations are shared for the whole database in `src/db/migrations/`. Migrations are generated with `drizzle-kit` and committed. Never use `drizzle-kit push`.
 - No `BaseRepository`.
 - Entities (`entities/*.entity.ts`) are business models with zero ORM imports.
 - Every method of a `drizzle-<name>.repository.ts` returns its result through the row -> entity mapper. Never return a Drizzle row typed as an entity: TypeScript accepts it, but all extra columns (e.g. `passwordHash`) travel along at runtime.

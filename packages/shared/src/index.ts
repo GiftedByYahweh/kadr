@@ -1,1 +1,1 @@
-export {};
+export * from './gallery/index.ts';

@@ -64,12 +64,40 @@ The client can:
   is set by the photographer per gallery). Every photo selected above the limit
   adds the per-photo price, and the extra total is shown on screen. Selecting
   is not blocked when the limit is exceeded.
-- **Client identity.** Anyone with the link can view. To like or comment, the
-  visitor enters a name (email optional) once; it is remembered in the browser.
-  No passwords or accounts.
-- **Shared selection.** A gallery has one shared selection. The counter counts
-  unique liked photos; every like and comment records who made it, so the
-  photographer sees e.g. "❤️ Olena, Andrii".
+- **No visitor identity.** Anyone with the gallery link can view, like and
+  comment. Visitors are not identified (no name, no account); the secret
+  `share_token` in the link is the only access control. Per-visitor likes can
+  be added later without breaking data.
+- **Shared selection.** A like belongs to a photo, not to a person: it is the
+  `liked_at` timestamp on the photo, and removing it removes it for everyone.
+  The package counter counts liked photos of the gallery.
+- **Comments** belong to a photo and have no author; they all come from the
+  client side.
+- **Extra photo price** is a whole number in UAH.
+- **Submit selection.** The client can press "Submit selection"; the
+  photographer sees that it was submitted, and the client can still change it.
+- **After expiry** the gallery link is fully blocked for the client.
+- **No sections** inside a gallery in the MVP.
+- **Photo order**: by file name by default, the photographer can reorder by
+  drag and drop.
+
+## Data model
+
+```
+users ──< galleries ──< gallery_media ──< gallery_comments
+```
+
+- `galleries`: `user_id`, `title`, `share_token`, `status`
+  (`active` / `archived` / `trashed`), `expires_at`, `included_count`,
+  `extra_price`, `selection_submitted_at`.
+- `gallery_media`: `original_name`, `storage_key`, `preview_key`, `status`
+  (`uploading` / `ready` / `failed`), `content_type`, `size_bytes`, `width`,
+  `height`, `taken_at`, `position`, `liked_at` (`null` = not liked),
+  `is_cover` (at most one per gallery; without a cover the first photo by
+  `position` is used).
+- `gallery_comments`: `media_id`, `text`, `created_at`.
+
+Schema source: `apps/api/src/modules/*/tables/`.
 
 ## Open questions
 
@@ -83,8 +111,6 @@ The client can:
 
 ### Selection and file names
 
-- Is there a "submit selection" step that notifies the photographer and locks
-  the selection? Can the client change it afterwards?
 - Export format for file names: comma- or newline-separated, ready-made
   Lightroom search string? With or without extension? (Photographer uploads
   JPEGs but works with RAWs, so without extension is more useful.)
@@ -98,7 +124,6 @@ The client can:
 
 ### Access period
 
-- After expiry: is everything blocked, or only downloads?
 - How long does an archived/trashed gallery live before final deletion?
   (Directly affects storage cost: originals of one shoot are 5–15 GB.)
 - Reminder to the client before expiry?
@@ -111,8 +136,6 @@ The client can:
 
 ### General
 
-- Sections inside a shoot (ceremony, party, …)?
-- Photo order: file name, capture time (EXIF), or manual?
 - Upload formats: JPEG only? HEIC? Video?
 - Notifications to the photographer (email/Telegram) about selections and
   comments?
