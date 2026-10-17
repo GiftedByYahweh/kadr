@@ -1,6 +1,7 @@
 const PRICE_FORMAT = new Intl.NumberFormat('uk-UA', {
   style: 'currency',
   currency: 'UAH',
+  currencyDisplay: 'narrowSymbol',
   maximumFractionDigits: 0,
 });
 

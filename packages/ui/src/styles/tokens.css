@@ -14,7 +14,7 @@
   --color-muted: var(--palette-grey-light);
   --color-surface: var(--palette-grey-lightest);
   --color-text-muted: var(--palette-grey-mid);
-  --color-overlay: rgb(15 11 10 / 40%);
+  --color-overlay: rgb(15 11 10 / 55%);
   --color-scrim: rgb(0 0 0 / 35%);
   --color-header-blur: rgb(255 255 255 / 80%);
   --color-inverse-bg: var(--palette-black);
@@ -50,6 +50,8 @@
   --photo-scrim-height: 96px;
   --viewer-bar-height: 64px;
   --panel-width: 360px;
+  --dialog-width: 420px;
+  --selection-bar-height: 72px;
 
   --radius: 2px;
   --icon-size: 24px;

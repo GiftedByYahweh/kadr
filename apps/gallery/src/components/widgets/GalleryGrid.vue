@@ -25,7 +25,7 @@ const { open } = useViewer();
         <span
           v-if="item.comments.length"
           class="icon-button"
-          :aria-label="`${item.comments.length} comments`"
+          :aria-label="`Коментарів: ${item.comments.length}`"
         >
           <span class="icon icon--comment" />
           <span class="icon-button__badge">{{ item.comments.length }}</span>
@@ -37,7 +37,7 @@ const { open } = useViewer();
       </PhotoCard>
     </li>
   </ul>
-  <p v-else class="empty text-upper text-muted">nothing selected yet</p>
+  <p v-else class="empty text-upper text-muted">ще нічого не обрано</p>
 </template>
 
 <style scoped>

@@ -78,6 +78,8 @@ The client can:
   photographer sees that it was submitted, and the client can still change it.
 - **After expiry** the gallery link is fully blocked for the client.
 - **No sections** inside a gallery in the MVP.
+- **Client UI language**: Ukrainian (labels, dates `16 жовтня о 21:20`,
+  prices `300 ₴`).
 - **Photo order**: by file name by default, the photographer can reorder by
   drag and drop.
 
@@ -140,6 +142,5 @@ Schema source: `apps/api/src/modules/*/tables/`.
 - Notifications to the photographer (email/Telegram) about selections and
   comments?
 - Promote a gallery photo to the portfolio in one click?
-- Client UI language: Ukrainian only or several?
 - Comparing photos: how many at once (2? up to 4?), and how does it work on a
   phone?

@@ -14,6 +14,10 @@
   height: var(--icon-size-s);
 }
 
+.icon--check {
+  mask-image: url('../../icons/check.svg');
+}
+
 .icon--close {
   mask-image: url('../../icons/close.svg');
 }

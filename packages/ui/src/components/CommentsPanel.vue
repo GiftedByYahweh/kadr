@@ -26,12 +26,12 @@ function submit() {
 </script>
 
 <template>
-  <aside class="comments-panel" aria-label="Comments">
+  <aside class="comments-panel" aria-label="Коментарі">
     <header class="comments-panel__header">
-      <span class="text-upper">comments</span>
+      <span class="text-upper">коментарі</span>
       <button
         class="icon-button"
-        aria-label="Close comments"
+        aria-label="Закрити коментарі"
         @click="emit('close')"
       >
         <span class="icon icon--close" />
@@ -49,19 +49,19 @@ function submit() {
         </time>
       </li>
     </ul>
-    <p v-else class="comments-panel__empty text-muted">No comments yet</p>
+    <p v-else class="comments-panel__empty text-muted">Ще немає коментарів</p>
     <form class="comments-panel__form" @submit.prevent="submit">
       <input
         v-model="draft"
         class="comments-panel__input"
-        placeholder="Comment…"
-        aria-label="Comment"
+        placeholder="Коментар…"
+        aria-label="Коментар"
         :maxlength="maxLength"
       />
       <button
         class="icon-button"
         type="submit"
-        aria-label="Send comment"
+        aria-label="Надіслати коментар"
         :disabled="!draft.trim()"
       >
         <span class="icon icon--send" />

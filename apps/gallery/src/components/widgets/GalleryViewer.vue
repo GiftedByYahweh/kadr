@@ -33,7 +33,7 @@ const viewerItems = computed(() =>
         class="icon-button"
         :class="{ 'icon-button--active': commentsOpen }"
         :aria-pressed="commentsOpen"
-        aria-label="Comments"
+        aria-label="Коментарі"
         @click="toggleComments"
       >
         <span class="icon icon--comment" />

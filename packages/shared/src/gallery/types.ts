@@ -20,5 +20,6 @@ export interface ClientGalleryDto {
   coverUrl: string;
   includedCount: number;
   extraPrice: number;
+  selectionSubmittedAt: string | null;
   media: ClientGalleryMediaDto[];
 }

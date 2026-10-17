@@ -6,5 +6,6 @@
 @import './components/photo-card.css';
 @import './components/icon.css';
 @import './components/comments-panel.css';
+@import './components/dialog.css';
 @import 'photoswipe/style.css';
 @import './components/viewer.css';

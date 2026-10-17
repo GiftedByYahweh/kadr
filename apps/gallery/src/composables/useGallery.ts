@@ -56,6 +56,8 @@ export function useGallery() {
   return {
     gallery,
     filter,
+    media,
+    likedMedia,
     visibleMedia,
     summary,
     load,

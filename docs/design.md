@@ -41,12 +41,20 @@ Extracted from `photographer_portfolio/portfolio/src` (`styles/global.css`,
    photo) full-screen with the dark overlay; gallery title as the display
    title; uppercase subtitle (photographer brand / date); `view photos ↓` text
    link that scrolls to the grid.
-2. **Top bar** — appears over the hero like the portfolio header, becomes
-   solid (blurred white) after the hero. Left: brand. Right, uppercase mono:
-   - selection counter `selected 34 / 30`;
-   - when above the package: `+4 × 150 ₴ = 600 ₴` in the accent color;
-   - filter text links `all` / `selected ♥`;
-   - `download all →`.
+2. **Toolbar** — sticky under the hero.
+   - Desktop, one row: selection counter `12 / 10 in package` and the extra
+     `+2 extra · 300 ₴` (accent) on the left; filters `all 18` /
+     `selected 12 ♡` (active one underlined, heart filled in accent),
+     `download all ↓` and the primary **Send selection** button on the right.
+   - Mobile: the top row keeps only the filters and a download icon; the
+     counter, the extra (`12 / 10`, `+2 · 300 ₴`) and the button move to a
+     bar fixed at the bottom of the screen. The bar appears only when at least one photo
+     is selected: it slides up and fades in (300ms) and slides away faster
+     (200ms) when the selection becomes empty.
+   - Send button states: nothing selected → disabled; not sent →
+     `send selection`; sent and unchanged → `sent ✓` (outline, disabled);
+     changed after sending → `send update`. The client can keep changing the
+     selection after sending.
 3. **Grid** — justified rows (like Google Photos): every photo keeps its
    aspect ratio, rows have equal height (`--photo-row-height`, 360px desktop /
    240px mobile, so two portrait frames share a row on a phone) and fill the full width, order stays left-to-right. Pure CSS:
@@ -70,6 +78,13 @@ Extracted from `photographer_portfolio/portfolio/src` (`styles/global.css`,
    comments show a comment icon with the count in the grid.
 6. **Expired / not found** — neutral grey full-height block with a short
    uppercase message, like the portfolio's empty state.
+
+### Language
+
+All client-facing text is Ukrainian: `усі 18`, `обрані 12`, `завантажити всі`,
+`12 / 10 у пакеті`, `+2 додатково · 300 ₴`, `підтвердити вибір` /
+`підтверджено` / `підтвердити зміни`, `коментарі`, `ще немає коментарів`. English
+examples above describe the layout, not the copy.
 
 ### Principles
 

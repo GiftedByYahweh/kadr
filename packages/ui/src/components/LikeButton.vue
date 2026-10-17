@@ -9,7 +9,7 @@ const emit = defineEmits<{ toggle: [] }>();
     class="icon-button"
     :class="{ 'icon-button--active': liked }"
     :aria-pressed="liked"
-    aria-label="Select photo"
+    aria-label="Обрати фото"
     @click.stop="emit('toggle')"
   >
     <span

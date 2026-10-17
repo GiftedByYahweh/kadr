@@ -1,9 +1,10 @@
 {
-  "title": "Olena & Andrii",
-  "subtitle": "wedding · 12.09.2026",
+  "title": "Олена й Андрій",
+  "subtitle": "весілля · 12.09.2026",
   "coverUrl": "https://picsum.photos/seed/kadr-cover/2400/1600",
   "includedCount": 10,
   "extraPrice": 150,
+  "selectionSubmittedAt": null,
   "media": [
     {
       "id": "m01",

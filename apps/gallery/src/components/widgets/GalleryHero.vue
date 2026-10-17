@@ -11,7 +11,7 @@ defineProps<{
     <div class="hero__overlay">
       <h1 class="text-display text-italic">{{ title }}</h1>
       <p class="text-upper">{{ subtitle }}</p>
-      <a class="text-upper text-hover" href="#photos">view photos ↓</a>
+      <a class="text-upper text-hover" href="#photos">дивитися фото ↓</a>
     </div>
   </section>
 </template>

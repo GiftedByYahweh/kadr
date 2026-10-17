@@ -82,6 +82,10 @@ function createInstance(startIndex: number) {
     arrowPrevSVG: icon('chevron-left'),
     arrowNextSVG: icon('chevron-right'),
     paddingFn: slidePadding,
+    closeTitle: 'Закрити',
+    arrowPrevTitle: 'Попереднє фото',
+    arrowNextTitle: 'Наступне фото',
+    errorMsg: 'Не вдалося завантажити фото',
     showHideAnimationType: reducedMotion ? 'none' : 'zoom',
     easing: cssToken('--ease-out'),
   });
