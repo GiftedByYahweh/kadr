@@ -29,7 +29,7 @@ function registerShutdownHandlers(server: FastifyInstance): void {
 
 async function bootstrap(): Promise<void> {
   const container = appContainer(config, logger);
-  const server = await buildServer({ container, config, logger });
+  const server = await buildServer({ container, logger });
   registerShutdownHandlers(server);
 
   await server.listen({ port: config.port, host: config.host });
