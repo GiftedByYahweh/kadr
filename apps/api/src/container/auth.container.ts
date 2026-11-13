@@ -1,5 +1,8 @@
+import type { AppConfig } from '@config';
 import {
   AuthenticateSessionUseCase,
+  AuthGuard,
+  authRoutes,
   CreateUserUseCase,
   GetCurrentUserUseCase,
   LoginUseCase,
@@ -9,7 +12,8 @@ import {
 import type { InfrastructureContainer } from './infrastructure.container.ts';
 import type { Repositories } from './repositories.container.ts';
 
-export function initAuthUseCases(
+export function initAuthContainer(
+  config: AppConfig,
   infrastructure: InfrastructureContainer,
   repositories: Repositories,
 ) {
@@ -36,14 +40,16 @@ export function initAuthUseCases(
     infrastructure.uow,
   );
 
-  return {
+  const guard = new AuthGuard(authenticateSession, config.isProduction);
+  const routes = authRoutes({
     login,
     logout,
-    authenticateSession,
     getCurrentUser,
-    createUser,
-    setUserPassword,
-  };
+    authGuard: guard,
+    secureCookies: config.isProduction,
+  });
+
+  return { guard, routes, createUser, setUserPassword };
 }
 
-export type AuthUseCases = ReturnType<typeof initAuthUseCases>;
+export type AuthContainer = ReturnType<typeof initAuthContainer>;

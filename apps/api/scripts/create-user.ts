@@ -5,7 +5,7 @@ await runCli(async (container, prompt) => {
   if (!username) throw new Error('Username is required');
 
   const credentials = await askCredentials(prompt);
-  const user = await container.useCases.auth.createUser.execute({
+  const user = await container.auth.createUser.execute({
     username,
     email: credentials.email,
     password: credentials.password,
