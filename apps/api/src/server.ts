@@ -15,7 +15,7 @@ import { errorResponse, successResponse } from '@common/utils/api-response.ts';
 import type { AppConfig } from './config.ts';
 import type { AppContainer } from '@container/index.ts';
 import type { Logger } from '@logger/index.ts';
-import { authRoutes } from '@modules/auth/index.ts';
+import { authRoutes, AuthGuard } from '@modules/auth/index.ts';
 
 interface BuildServerOptions {
   container: AppContainer;
@@ -106,8 +106,16 @@ async function registerRoutes(
     return { uptime: process.uptime() };
   });
 
+  const authUseCases = container.useCases.auth;
+  const authGuard = new AuthGuard(
+    authUseCases.authenticateSession,
+    config.isProduction,
+  );
   const auth = authRoutes({
-    useCases: container.useCases.auth,
+    login: authUseCases.login,
+    logout: authUseCases.logout,
+    getCurrentUser: authUseCases.getCurrentUser,
+    authGuard,
     secureCookies: config.isProduction,
   });
   await server.register(auth);
@@ -118,6 +126,7 @@ export const buildServer = async (
 ): Promise<FastifyInstance> => {
   const { container, config, logger } = options;
   const server = fastify({ trustProxy: true });
+  server.decorateRequest('auth', null);
   server.setValidatorCompiler(validatorCompiler);
   server.setSerializerCompiler(serializerCompiler);
 

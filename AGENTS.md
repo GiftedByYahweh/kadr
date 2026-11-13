@@ -202,7 +202,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 ### 4.7 Routes
 
 - All API route paths are declared once in `@kadr/shared` (`api/routes/`) and used by both Fastify and frontend transports. No inline or module-local route strings.
-- Routes are split by zone, one constant per zone. Paths are full (`/api/admin/auth/login`); a zone is defined by the Fastify plugin its routes are registered in, which also carries the zone's guard:
+- Routes are split by zone, one constant per zone. Paths are full (`/api/admin/auth/login`). Each module has one routes plugin; protected routes attach the zone's guard per route via `onRequest` (e.g. `{ onRequest: guard }`):
   - `SystemApiRoutes` (`system.ts`) — service routes outside any zone (`health`); `API_PREFIX` also lives here;
   - `AdminApiRoutes` (`admin.ts`) — `/api/admin/*`, photographer session;
   - `GalleryApiRoutes` (`gallery.ts`) — `/api/gallery/*`, gallery link access;
@@ -211,7 +211,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 4.8 Isolation & Dependency Injection
 
-- Fastify is used only in `src/server.ts`, `src/main.ts` and `*.routes.ts`. `FastifyRequest`/`FastifyReply` never reach use cases, services or repositories.
+- Fastify is used only in `src/server.ts`, `src/main.ts`, `*.routes.ts`, `*.guard.ts` and helpers inside a module's `routes/` folder (e.g. `session-cookie.ts`). `FastifyRequest`/`FastifyReply` never reach use cases, services or repositories.
 - Route schemas live in `*.schema.ts`, never inline in handlers.
 - Env variables are read only in `src/config.ts` via `requireEnv` from `@kadr/shared` (also used in Vite configs); the rest of the code receives `AppConfig`.
 - Logging goes through the `Logger` port (`src/logger/`); Fastify's built-in logger is off.
@@ -301,6 +301,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ## 7. Code Style
 
+- A condition that is a function call goes into a named variable first: `const shouldRenew = authService.shouldRenewSession(expiresAt, now); if (!shouldRenew) return null;`, not `if (!authService.shouldRenewSession(...))`.
 - An `if` with a single statement that fits on one line (Prettier's 80 columns) is written on one line without braces: `if (input.token === null) return;`. Otherwise use braces on separate lines.
 
 ## 8. Verification Before Completing Any Task

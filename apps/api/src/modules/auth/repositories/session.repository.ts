@@ -13,5 +13,5 @@ export interface SessionRepository {
   create(data: CreateSessionData): Promise<Session>;
   updateExpiresAt(id: string, expiresAt: Date): Promise<void>;
   deleteById(id: string): Promise<void>;
-  deleteByTokenHash(tokenHash: string): Promise<void>;
+  deleteByUserId(userId: string): Promise<void>;
 }

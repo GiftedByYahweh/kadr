@@ -3,7 +3,7 @@ import { AppError } from '@common/error/app.error.ts';
 import type { PasswordHasher } from '@common/hashing/password-hasher.ts';
 import type { TokenService } from '@common/tokens/token-service.ts';
 import type { UseCase } from '@common/use-case/use-case.ts';
-import { SESSION_TTL_MS } from '../auth.constants.ts';
+import { authService } from '../auth.service.ts';
 import { userMapper } from '../mappers/user.mapper.ts';
 import type { SessionRepository } from '../repositories/session.repository.ts';
 import type { UserRepository } from '../repositories/user.repository.ts';
@@ -58,7 +58,7 @@ export class LoginUseCase implements UseCase<LoginInput, LoginOutput> {
       );
     }
 
-    const expiresAt = new Date(new Date().getTime() + SESSION_TTL_MS);
+    const expiresAt = authService.sessionExpiresAt(new Date());
     const token = this.tokenService.generate();
     const tokenHash = this.tokenService.hash(token);
 
