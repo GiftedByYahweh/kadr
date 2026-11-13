@@ -8,8 +8,8 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { pgEnumValues } from '../../../db/pg-enum-values.ts';
-import { usersTable } from '../../auth/tables/users.table.ts';
+import { pgEnumValues } from '@db/pg-enum-values.ts';
+import { usersTable } from '@modules/auth/tables/users.table.ts';
 
 export const galleryStatusEnum = pgEnum(
   'gallery_status',

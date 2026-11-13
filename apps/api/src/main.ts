@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { loadAppConfig } from './config.ts';
-import { appContainer } from './container/index.ts';
-import { ConsoleLogger } from './logger/index.ts';
+import { appContainer } from '@container/index.ts';
+import { ConsoleLogger } from '@logger/index.ts';
 import { buildServer } from './server.ts';
 
 const SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;

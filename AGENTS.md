@@ -2,7 +2,7 @@
 
 ## 0. Project Context
 
-- Kadr is a photographer's portfolio website plus client galleries, built for a single photographer (one user in the system).
+- Kadr is a photographer's portfolio website plus client galleries.
 - It replaces the older `photographer_portfolio` project, which stays live until the portfolio is migrated here.
 - Current phase: **client galleries first** (api + admin + gallery), then the portfolio migration.
 - Gallery features, decisions and open questions: `docs/gallery-features.md`. Read it before any gallery work.
@@ -113,13 +113,13 @@ src/modules/<feature>/
 ├── routes/
 │   ├── <feature>.routes.ts          # Fastify route plugin
 │   └── <feature>.schema.ts          # Route validation schemas
-├── <feature>.deps.ts                # Deps interfaces of the module's use cases
 ├── <feature>.service.ts             # Pure domain logic
 └── index.ts                         # Public barrel export
 ```
 
 - No controllers: route handlers parse the request, call one use case and return its result.
 - Modules never import from `src/container/`; only the container depends on modules.
+- Imports inside one module (or one top-level folder such as `db/`, `container/`) are relative. Imports that cross into another area use the `@` aliases from `apps/api/tsconfig.json` (`@common/*`, `@config`, `@container/*`, `@db/*`, `@logger/*`, `@modules/*`), always with the explicit `.ts` extension. Never `../` out of the current module.
 
 ### 4.2 Single Use Case per Route & Atomic Transactions
 
@@ -127,50 +127,58 @@ src/modules/<feature>/
 - Route handlers contain zero business logic and zero arithmetic.
 - Max 350 lines per use case file; split steps into named helper functions or `<feature>.service.ts` before hitting ESLint limits.
 
-### 4.3 Functions vs Classes
+### 4.3 Classes vs Functions
 
-- **Functions everywhere. Classes only for components that own state**: connections, pools, SDK clients (DB provider, file storage client, logger). They implement a port interface.
-- Use cases: plain `async function` with the fixed signature `(deps, input)` (see 4.4).
-- Repositories and other components that only hold dependencies: factory functions returning an object that implements the port, e.g. `drizzleGalleryRepository(db): GalleryRepository`.
-- Mappers, `<feature>.service.ts`, helpers: plain functions.
-- Fastify route plugins and guards: functions.
+- **A class is used when it implements a port (`implements`), extends something (`extends`, e.g. `AppError extends Error`) or holds state/dependencies.** Dependencies are injected through the constructor as `private readonly`:
+  - use cases (see 4.4);
+  - repositories: `DrizzleGalleryRepository implements GalleryRepository`;
+  - infrastructure: `DbProvider`, `UnitOfWork`, `AsyncTxContext`, `ConsoleLogger implements Logger`, `Argon2PasswordHasher implements PasswordHasher`, `CryptoTokenService implements TokenService`, file storage, other SDK clients.
+- **A port** is an interface for anything infrastructural a use case depends on: I/O, secrets, cryptography, randomness, external services. Use cases receive ports through the constructor and never import implementations.
+- **Plain functions for pure deterministic logic**: mappers, `<feature>.service.ts` domain logic, helpers, container wiring.
+- Constants and helpers that belong to one class live inside it as `private static readonly` fields and `private static` methods.
+- No static-only classes. Related functions are grouped into a plain object, e.g. a mapper: `export const galleryMapper = { toEntity(row) {...}, toClientGalleryDto(gallery) {...} }`.
 
 ### 4.4 Use Case Shape
 
-- One use case = one file = one exported `async function <action>(deps, input)`. The signature is fixed: dependencies first, input second. No closures returning functions, no classes, no `.execute()`.
+- One use case = one file = one exported class `<Action>UseCase implements UseCase<Input, Output>` (`src/common/use-case/use-case.ts`) with a single public method `execute(input)`.
+- The constructor takes only what this use case needs.
 - `<Action>Input` is a named interface in the use case file.
-- `<Action>Deps` interfaces of a module live together in `modules/<feature>/<feature>.deps.ts`, one interface per use case listing only what it needs.
-- The return type is inferred, except when the use case returns a DTO from `@kadr/shared`, then it is annotated (`Promise<GalleryDto>`).
+- The return type of `execute` is inferred, except when it returns a DTO from `@kadr/shared`, then it is annotated (`Promise<GalleryDto>`).
 
 ```ts
 export interface TogglePhotoLikeInput {
   galleryId: string;
   photoId: string;
-  visitorId: string;
 }
 
-export async function togglePhotoLike(
-  deps: TogglePhotoLikeDeps,
-  input: TogglePhotoLikeInput,
-) {
-  const gallery = await deps.galleryRepository.findById(input.galleryId);
-  assertGalleryOpen(gallery, new Date());
-  ...
+export class TogglePhotoLikeUseCase implements UseCase<
+  TogglePhotoLikeInput,
+  void
+> {
+  constructor(private readonly galleryRepository: GalleryRepository) {}
+
+  async execute(input: TogglePhotoLikeInput) {
+    const gallery = await this.galleryRepository.findById(input.galleryId);
+    assertGalleryOpen(gallery, new Date());
+    ...
+  }
 }
 ```
 
-- Dependencies are bound once in `src/container/<feature>.container.ts`, which returns the module's use cases as an object; route plugins receive it and call `useCases.<action>(input)`:
+- Instances are created once in `src/container/<feature>.container.ts`, which returns the module's use cases as an object; route plugins receive it and call `useCases.<action>.execute(input)`:
 
 ```ts
-export const galleryUseCases = (deps: GalleryModuleDeps) => ({
-  togglePhotoLike: (input: TogglePhotoLikeInput) =>
-    togglePhotoLike(deps, input),
+export const galleryUseCases = (
+  repositories: Repositories,
+  uow: UnitOfWork,
+) => ({
+  togglePhotoLike: new TogglePhotoLikeUseCase(repositories.gallery),
 });
 
 export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 ```
 
-- When a use case needs another use case, it receives the bound function through its `deps`.
+- When a use case needs another use case, it receives that instance through its constructor.
 - Use cases depend on repository ports (interfaces), never on Drizzle implementations.
 - Use cases take the current time (`new Date()`) and pass it into pure service functions; services never read the clock themselves.
 - Use cases return DTOs from `@kadr/shared`, produced by mappers. Defaults and statuses of new records (e.g. `status: PENDING`) are decided in the use case, not in mappers.
@@ -178,9 +186,9 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 4.5 Naming
 
-- Functions: no `create` prefix (`drizzleGalleryRepository`, `galleryRoutes`, `galleryUseCases`, `toGalleryDto`, `successResponse`). A use case may start with `create` only when the domain action is creating something (`createGallery`).
-- Stateful classes: `DbProvider`, `R2FileStorage implements FileStorage`, `ConsoleLogger implements Logger`.
-- Files in `apps/api` use kebab-case with role suffixes: `.service.ts`, `.use-case.ts`, `.deps.ts`, `.table.ts`, `.repository.ts`, `drizzle-<name>.repository.ts`, `.schema.ts`, `.guard.ts`, `.routes.ts`, `.mapper.ts`, `.entity.ts`, `.provider.ts`, `.error.ts`, `.context.ts`. camelCase file names are forbidden.
+- Classes: PascalCase nouns for components (`DbProvider`, `DrizzleGalleryRepository`, `R2FileStorage`), use cases are a PascalCase verb phrase with the `UseCase` suffix (`TogglePhotoLikeUseCase`, `CreateGalleryUseCase`).
+- Functions and function objects: no `create` prefix (`galleryRoutes`, `galleryUseCases`, `galleryMapper`, `successResponse`).
+- Files in `apps/api` use kebab-case with role suffixes: `.service.ts`, `.use-case.ts`, `.table.ts`, `.repository.ts`, `drizzle-<name>.repository.ts`, `.schema.ts`, `.guard.ts`, `.routes.ts`, `.mapper.ts`, `.entity.ts`, `.provider.ts`, `.error.ts`, `.context.ts`. camelCase file names are forbidden.
 
 ### 4.6 Response Envelope
 
@@ -194,7 +202,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 ### 4.7 Routes
 
 - All API route paths are declared once in `@kadr/shared` (`api/routes/`) and used by both Fastify and frontend transports. No inline or module-local route strings.
-- Routes are split by zone, one constant per zone, each with its own `prefix`:
+- Routes are split by zone, one constant per zone. Paths are full (`/api/admin/auth/login`). Each module has one routes plugin; protected routes attach the zone's guard per route via `onRequest` (e.g. `{ onRequest: guard }`):
   - `SystemApiRoutes` (`system.ts`) — service routes outside any zone (`health`); `API_PREFIX` also lives here;
   - `AdminApiRoutes` (`admin.ts`) — `/api/admin/*`, photographer session;
   - `GalleryApiRoutes` (`gallery.ts`) — `/api/gallery/*`, gallery link access;
@@ -203,15 +211,15 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 4.8 Isolation & Dependency Injection
 
-- Fastify is used only in `src/server.ts`, `src/main.ts` and `*.routes.ts`. `FastifyRequest`/`FastifyReply` never reach use cases, services or repositories.
+- Fastify is used only in `src/server.ts`, `src/main.ts`, `*.routes.ts`, `*.guard.ts` and helpers inside a module's `routes/` folder (e.g. `session-cookie.ts`). `FastifyRequest`/`FastifyReply` never reach use cases, services or repositories.
 - Route schemas live in `*.schema.ts`, never inline in handlers.
 - Env variables are read only in `src/config.ts` via `requireEnv` from `@kadr/shared` (also used in Vite configs); the rest of the code receives `AppConfig`.
 - Logging goes through the `Logger` port (`src/logger/`); Fastify's built-in logger is off.
 - Manual DI in `src/container/`: `infrastructure.container.ts`, `repositories.container.ts`, `<feature>.container.ts`, `app.container.ts`.
-- Mappers (`mappers/<name>.mapper.ts`) are plain functions with two jobs:
-  - DB row -> entity (`toGallery(row)`), used only by `drizzle-*.repository.ts`;
+- Mappers (`mappers/<name>.mapper.ts`) export one object `<name>Mapper` with plain methods for two jobs:
+  - DB row -> entity (`galleryMapper.toEntity(row)`), used only by `drizzle-*.repository.ts`;
   - entity -> DTO from `@kadr/shared` (`toAdminGalleryDto`, `toClientGalleryDto`): dates to ISO strings, storage keys to URLs, computed fields. Fields are picked deliberately per consumer instead of copying the whole entity. Entities are never returned from the API directly.
-- Stateful infrastructure adapters are classes implementing a port interface (see 4.3).
+- Infrastructure adapters are classes implementing a port interface (see 4.3).
 - Pure domain calculations (e.g. package limit / extra photos price) live in `<feature>.service.ts` with zero framework or DB imports.
 
 ### 4.9 Database
@@ -291,7 +299,12 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ---
 
-## 7. Verification Before Completing Any Task
+## 7. Code Style
+
+- A condition that is a function call goes into a named variable first: `const shouldRenew = authService.shouldRenewSession(expiresAt, now); if (!shouldRenew) return null;`, not `if (!authService.shouldRenewSession(...))`.
+- An `if` with a single statement that fits on one line (Prettier's 80 columns) is written on one line without braces: `if (input.token === null) return;`. Otherwise use braces on separate lines.
+
+## 8. Verification Before Completing Any Task
 
 1. `pnpm typecheck` — 0 errors across all packages.
 2. `pnpm lint` — 0 ESLint errors/warnings (`eslint.config.ts`: `strictTypeChecked`, `stylisticTypeChecked`, `vue/flat/recommended`). `.astro` files are not linted.

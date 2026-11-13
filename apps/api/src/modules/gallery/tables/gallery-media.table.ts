@@ -12,7 +12,7 @@ import {
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { pgEnumValues } from '../../../db/pg-enum-values.ts';
+import { pgEnumValues } from '@db/pg-enum-values.ts';
 import { galleriesTable } from './galleries.table.ts';
 
 export const galleryMediaStatusEnum = pgEnum(

@@ -1,7 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@common/*": ["./src/common/*"],
+      "@config": ["./src/config.ts"],
+      "@container/*": ["./src/container/*"],
+      "@db/*": ["./src/db/*"],
+      "@logger/*": ["./src/logger/*"],
+      "@modules/*": ["./src/modules/*"]
+    }
   },
-  "include": ["src", "drizzle.config.ts"]
+  "include": ["src", "scripts", "drizzle.config.ts"]
 }

@@ -54,8 +54,6 @@ The client can:
 
 ## Decisions
 
-- **Single photographer.** The system has one photographer user. No
-  multi-tenancy, but the code is still built properly.
 - **One gallery for selecting and downloading.** The client selects photos and
   can also download them; there are no separate proofing and delivery stages.
 - **Extra photos: counting only.** No online payment. The system calculates
@@ -82,6 +80,16 @@ The client can:
   prices `300 ₴`).
 - **Photo order**: by file name by default, the photographer can reorder by
   drag and drop.
+- **Revoke link.** In the admin the photographer can regenerate the gallery's
+  `share_token`; the old link stops working immediately.
+- **Signed file URLs.** Previews and originals are served only through
+  short-lived signed URLs issued by the API for a valid `share_token`; storage
+  is never public.
+- **No PIN/password** on galleries for now; the secret link is enough.
+- **Token lookup is rate limited** by the general API rate limiter, so
+  `share_token` cannot be brute-forced.
+- **Gallery pages are `noindex`** (meta tag + `X-Robots-Tag` header), so they
+  never appear in search results.
 
 ## Data model
 
@@ -129,11 +137,9 @@ Schema source: `apps/api/src/modules/*/tables/`.
 - How long does an archived/trashed gallery live before final deletion?
   (Directly affects storage cost: originals of one shoot are 5–15 GB.)
 - Reminder to the client before expiry?
-- Manual revoke / regenerate link?
 
 ### Security
 
-- PIN/password on the gallery, or a secret link only?
 - Watermarks on previews?
 
 ### General

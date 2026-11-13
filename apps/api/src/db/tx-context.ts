@@ -6,10 +6,14 @@ export interface TxContext {
   get(): DbExecutor | undefined;
 }
 
-export const asyncTxContext = (): TxContext => {
-  const storage = new AsyncLocalStorage<DbExecutor>();
-  return {
-    run: (executor, fn) => storage.run(executor, fn),
-    get: () => storage.getStore(),
-  };
-};
+export class AsyncTxContext implements TxContext {
+  private readonly storage = new AsyncLocalStorage<DbExecutor>();
+
+  run<T>(executor: DbExecutor, fn: () => Promise<T>): Promise<T> {
+    return this.storage.run(executor, fn);
+  }
+
+  get(): DbExecutor | undefined {
+    return this.storage.getStore();
+  }
+}

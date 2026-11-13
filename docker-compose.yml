@@ -24,6 +24,7 @@ services:
       dockerfile: apps/api/Dockerfile
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER}
     ports:
       - '4000:4000'
     depends_on:
