@@ -1,0 +1,5 @@
+const MEGABYTE = 1024 * 1024;
+const GIGABYTE = 1024 * MEGABYTE;
+
+export const IMAGE_MAX_SIZE_BYTES = 50 * MEGABYTE;
+export const VIDEO_MAX_SIZE_BYTES = 2 * GIGABYTE;
