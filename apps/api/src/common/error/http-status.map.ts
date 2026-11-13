@@ -26,4 +26,6 @@ export const HTTP_STATUS_BY_APP_ERROR: Record<AppErrorCode, HttpStatusCode> = {
   [DomainErrorCode.GALLERY_NOT_FOUND]: HttpStatusCode.NOT_FOUND,
   [DomainErrorCode.GALLERY_EXPIRED]: HttpStatusCode.FORBIDDEN,
   [DomainErrorCode.GALLERY_MEDIA_NOT_FOUND]: HttpStatusCode.NOT_FOUND,
+
+  [DomainErrorCode.INVALID_CREDENTIALS]: HttpStatusCode.UNAUTHORIZED,
 };

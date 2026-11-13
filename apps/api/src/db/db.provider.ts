@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import type { Logger } from '../logger/index.ts';
+import type { Logger } from '@logger/index.ts';
 import type { TxContext } from './tx-context.ts';
 
 type DbClient = ReturnType<typeof drizzle>;

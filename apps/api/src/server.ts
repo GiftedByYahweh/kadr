@@ -1,14 +1,21 @@
 import { HttpStatusCode, SystemApiRoutes } from '@kadr/shared';
+import fastifyCookie from '@fastify/cookie';
+import fastifyRateLimit from '@fastify/rate-limit';
 import fastify, { type FastifyInstance } from 'fastify';
-import { AppError } from './common/error/app.error.ts';
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod';
+import { AppError } from '@common/error/app.error.ts';
 import {
   HTTP_STATUS_BY_APP_ERROR,
   HTTP_STATUS_MESSAGES,
-} from './common/error/http-status.map.ts';
-import { errorResponse, successResponse } from './common/utils/api-response.ts';
+} from '@common/error/http-status.map.ts';
+import { errorResponse, successResponse } from '@common/utils/api-response.ts';
 import type { AppConfig } from './config.ts';
-import type { AppContainer } from './container/index.ts';
-import type { Logger } from './logger/index.ts';
+import type { AppContainer } from '@container/index.ts';
+import type { Logger } from '@logger/index.ts';
+import { authRoutes } from '@modules/auth/index.ts';
 
 interface BuildServerOptions {
   container: AppContainer;
@@ -81,23 +88,44 @@ function registerLifecycleHooks(
   });
 }
 
-function registerRoutes(server: FastifyInstance, container: AppContainer) {
+async function registerPlugins(server: FastifyInstance) {
+  await server.register(fastifyCookie);
+  await server.register(fastifyRateLimit, {
+    global: false,
+    errorResponseBuilder: () => new AppError(HttpStatusCode.TOO_MANY_REQUESTS),
+  });
+}
+
+async function registerRoutes(
+  server: FastifyInstance,
+  container: AppContainer,
+  config: AppConfig,
+) {
   server.get(SystemApiRoutes.health, async () => {
     await container.infrastructure.dbProvider.ping();
     return { uptime: process.uptime() };
   });
+
+  const auth = authRoutes({
+    useCases: container.useCases.auth,
+    secureCookies: config.isProduction,
+  });
+  await server.register(auth);
 }
 
 export const buildServer = async (
   options: BuildServerOptions,
 ): Promise<FastifyInstance> => {
-  const { container, logger } = options;
+  const { container, config, logger } = options;
   const server = fastify({ trustProxy: true });
+  server.setValidatorCompiler(validatorCompiler);
+  server.setSerializerCompiler(serializerCompiler);
 
   registerResponseHooks(server);
   registerLifecycleHooks(server, container);
   registerErrorHandlers(server, logger);
-  registerRoutes(server, container);
+  await registerPlugins(server);
+  await registerRoutes(server, container, config);
 
   await server.ready();
   return server;

@@ -10,6 +10,9 @@ export const loadAppConfig = () => {
     db: {
       url: requireEnv(env, 'DATABASE_URL'),
     },
+    auth: {
+      passwordPepper: requireEnv(env, 'PASSWORD_PEPPER'),
+    },
   };
 };
 

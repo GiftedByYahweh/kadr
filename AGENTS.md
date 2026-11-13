@@ -119,6 +119,7 @@ src/modules/<feature>/
 
 - No controllers: route handlers parse the request, call one use case and return its result.
 - Modules never import from `src/container/`; only the container depends on modules.
+- Imports inside one module (or one top-level folder such as `db/`, `container/`) are relative. Imports that cross into another area use the `@` aliases from `apps/api/tsconfig.json` (`@common/*`, `@config`, `@container/*`, `@db/*`, `@logger/*`, `@modules/*`), always with the explicit `.ts` extension. Never `../` out of the current module.
 
 ### 4.2 Single Use Case per Route & Atomic Transactions
 
@@ -128,17 +129,18 @@ src/modules/<feature>/
 
 ### 4.3 Classes vs Functions
 
-- **Classes for everything that has dependencies or state**, with dependencies injected through the constructor as `private readonly`:
+- **A class is used when it implements a port (`implements`), extends something (`extends`, e.g. `AppError extends Error`) or holds state/dependencies.** Dependencies are injected through the constructor as `private readonly`:
   - use cases (see 4.4);
   - repositories: `DrizzleGalleryRepository implements GalleryRepository`;
-  - infrastructure: `DbProvider`, `UnitOfWork`, `AsyncTxContext`, `ConsoleLogger implements Logger`, file storage, other SDK clients.
-- **Plain functions for everything without dependencies**: mappers, `<feature>.service.ts` domain logic, helpers, Fastify route plugins and guards, container wiring.
-- No static-only classes. To group functions at the call site, use a namespace import: `import * as GalleryMapper from '../mappers/gallery.mapper.ts'`.
-- Classes depend on port interfaces, not on concrete implementations.
+  - infrastructure: `DbProvider`, `UnitOfWork`, `AsyncTxContext`, `ConsoleLogger implements Logger`, `Argon2PasswordHasher implements PasswordHasher`, `CryptoTokenService implements TokenService`, file storage, other SDK clients.
+- **A port** is an interface for anything infrastructural a use case depends on: I/O, secrets, cryptography, randomness, external services. Use cases receive ports through the constructor and never import implementations.
+- **Plain functions for pure deterministic logic**: mappers, `<feature>.service.ts` domain logic, helpers, container wiring.
+- Constants and helpers that belong to one class live inside it as `private static readonly` fields and `private static` methods.
+- No static-only classes. Related functions are grouped into a plain object, e.g. a mapper: `export const galleryMapper = { toEntity(row) {...}, toClientGalleryDto(gallery) {...} }`.
 
 ### 4.4 Use Case Shape
 
-- One use case = one file = one exported class with a single public method `execute(input)`.
+- One use case = one file = one exported class `<Action>UseCase implements UseCase<Input, Output>` (`src/common/use-case/use-case.ts`) with a single public method `execute(input)`.
 - The constructor takes only what this use case needs.
 - `<Action>Input` is a named interface in the use case file.
 - The return type of `execute` is inferred, except when it returns a DTO from `@kadr/shared`, then it is annotated (`Promise<GalleryDto>`).
@@ -149,7 +151,10 @@ export interface TogglePhotoLikeInput {
   photoId: string;
 }
 
-export class TogglePhotoLike {
+export class TogglePhotoLikeUseCase implements UseCase<
+  TogglePhotoLikeInput,
+  void
+> {
   constructor(private readonly galleryRepository: GalleryRepository) {}
 
   async execute(input: TogglePhotoLikeInput) {
@@ -167,7 +172,7 @@ export const galleryUseCases = (
   repositories: Repositories,
   uow: UnitOfWork,
 ) => ({
-  togglePhotoLike: new TogglePhotoLike(repositories.gallery),
+  togglePhotoLike: new TogglePhotoLikeUseCase(repositories.gallery),
 });
 
 export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
@@ -181,8 +186,8 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ### 4.5 Naming
 
-- Classes: PascalCase nouns for components (`DbProvider`, `DrizzleGalleryRepository`, `R2FileStorage`), PascalCase verb phrases for use cases (`TogglePhotoLike`, `CreateGallery`).
-- Functions: no `create` prefix (`galleryRoutes`, `galleryUseCases`, `toGalleryDto`, `successResponse`).
+- Classes: PascalCase nouns for components (`DbProvider`, `DrizzleGalleryRepository`, `R2FileStorage`), use cases are a PascalCase verb phrase with the `UseCase` suffix (`TogglePhotoLikeUseCase`, `CreateGalleryUseCase`).
+- Functions and function objects: no `create` prefix (`galleryRoutes`, `galleryUseCases`, `galleryMapper`, `successResponse`).
 - Files in `apps/api` use kebab-case with role suffixes: `.service.ts`, `.use-case.ts`, `.table.ts`, `.repository.ts`, `drizzle-<name>.repository.ts`, `.schema.ts`, `.guard.ts`, `.routes.ts`, `.mapper.ts`, `.entity.ts`, `.provider.ts`, `.error.ts`, `.context.ts`. camelCase file names are forbidden.
 
 ### 4.6 Response Envelope
@@ -197,7 +202,7 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 ### 4.7 Routes
 
 - All API route paths are declared once in `@kadr/shared` (`api/routes/`) and used by both Fastify and frontend transports. No inline or module-local route strings.
-- Routes are split by zone, one constant per zone, each with its own `prefix`:
+- Routes are split by zone, one constant per zone. Paths are full (`/api/admin/auth/login`); a zone is defined by the Fastify plugin its routes are registered in, which also carries the zone's guard:
   - `SystemApiRoutes` (`system.ts`) — service routes outside any zone (`health`); `API_PREFIX` also lives here;
   - `AdminApiRoutes` (`admin.ts`) — `/api/admin/*`, photographer session;
   - `GalleryApiRoutes` (`gallery.ts`) — `/api/gallery/*`, gallery link access;
@@ -211,8 +216,8 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 - Env variables are read only in `src/config.ts` via `requireEnv` from `@kadr/shared` (also used in Vite configs); the rest of the code receives `AppConfig`.
 - Logging goes through the `Logger` port (`src/logger/`); Fastify's built-in logger is off.
 - Manual DI in `src/container/`: `infrastructure.container.ts`, `repositories.container.ts`, `<feature>.container.ts`, `app.container.ts`.
-- Mappers (`mappers/<name>.mapper.ts`) are plain functions with two jobs:
-  - DB row -> entity (`toGallery(row)`), used only by `drizzle-*.repository.ts`;
+- Mappers (`mappers/<name>.mapper.ts`) export one object `<name>Mapper` with plain methods for two jobs:
+  - DB row -> entity (`galleryMapper.toEntity(row)`), used only by `drizzle-*.repository.ts`;
   - entity -> DTO from `@kadr/shared` (`toAdminGalleryDto`, `toClientGalleryDto`): dates to ISO strings, storage keys to URLs, computed fields. Fields are picked deliberately per consumer instead of copying the whole entity. Entities are never returned from the API directly.
 - Infrastructure adapters are classes implementing a port interface (see 4.3).
 - Pure domain calculations (e.g. package limit / extra photos price) live in `<feature>.service.ts` with zero framework or DB imports.
@@ -294,7 +299,11 @@ export type GalleryUseCases = ReturnType<typeof galleryUseCases>;
 
 ---
 
-## 7. Verification Before Completing Any Task
+## 7. Code Style
+
+- An `if` with a single statement that fits on one line (Prettier's 80 columns) is written on one line without braces: `if (input.token === null) return;`. Otherwise use braces on separate lines.
+
+## 8. Verification Before Completing Any Task
 
 1. `pnpm typecheck` — 0 errors across all packages.
 2. `pnpm lint` — 0 ESLint errors/warnings (`eslint.config.ts`: `strictTypeChecked`, `stylisticTypeChecked`, `vue/flat/recommended`). `.astro` files are not linted.
