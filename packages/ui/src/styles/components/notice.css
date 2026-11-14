@@ -1,0 +1,21 @@
+.notice {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-base);
+}
+
+.notice--success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.notice--warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.notice--danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}

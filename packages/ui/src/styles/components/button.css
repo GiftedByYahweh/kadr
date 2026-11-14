@@ -47,3 +47,13 @@
   cursor: pointer;
   transition: transform var(--duration-press) var(--ease-out);
 }
+
+.btn--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: var(--color-on-accent);
+}
+
+.btn--block {
+  width: 100%;
+}

@@ -11,10 +11,7 @@
   "dependencies": {
     "@kadr/shared": "workspace:*",
     "@kadr/ui": "workspace:*",
-    "@primeuix/themes": "^3.0.1",
     "@tanstack/vue-query": "^5.104.2",
-    "primeicons": "^8.0.2",
-    "primevue": "^5.0.2",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
   },

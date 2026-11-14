@@ -53,17 +53,17 @@
 
 - **pnpm workspaces**: `apps/*`, `packages/*`.
 
-| Package           | Role                         | Stack                                       |
-| ----------------- | ---------------------------- | ------------------------------------------- |
-| `apps/api`        | Backend API                  | Fastify, Drizzle ORM, PostgreSQL            |
-| `apps/admin`      | Admin panel for photographer | Vue 3, vue-router, TanStack Query, PrimeVue |
-| `apps/gallery`    | Client gallery               | Vue 3 (single page, no router)              |
-| `apps/portfolio`  | Public portfolio site        | Astro (static)                              |
-| `packages/shared` | Shared types, DTOs, Zod      | TypeScript, Zod                             |
-| `packages/ui`     | Shared Vue components        | Vue 3 (no PrimeVue)                         |
+| Package           | Role                         | Stack                               |
+| ----------------- | ---------------------------- | ----------------------------------- |
+| `apps/api`        | Backend API                  | Fastify, Drizzle ORM, PostgreSQL    |
+| `apps/admin`      | Admin panel for photographer | Vue 3, vue-router, TanStack Query   |
+| `apps/gallery`    | Client gallery               | Vue 3 (single page, no router)      |
+| `apps/portfolio`  | Public portfolio site        | Astro (static)                      |
+| `packages/shared` | Shared types, DTOs, Zod      | TypeScript, Zod                     |
+| `packages/ui`     | Shared Vue components        | Vue 3, Reka UI (headless behaviour) |
 
 - Internal packages are consumed as TypeScript source (`exports` → `./src/index.ts`), no build step. Depend on them with `workspace:*`.
-- `@kadr/shared` must stay framework-free (no Vue, Fastify, Drizzle). `@kadr/ui` must not depend on PrimeVue, because `gallery` does not use it.
+- `@kadr/shared` must stay framework-free (no Vue, Fastify, Drizzle). All apps (admin, gallery, portfolio) share one UI system: `@kadr/ui`. No third-party styled component library (PrimeVue etc.).
 - All configs are TypeScript (`.ts`) or JSON. No `.js` config files.
 - Every package extends `tsconfig.base.json` (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature`, `noUnusedLocals`, `noUnusedParameters`, `verbatimModuleSyntax`). `apps/portfolio` extends it together with `astro/tsconfigs/strict`. Relative imports use explicit `.ts` extensions; env variables are read as `process.env['NAME']`.
 
@@ -271,8 +271,7 @@ export function initGalleryContainer(
 
 ### 5.1 Layers
 
-- `src/api/` — domain API functions on top of `httpTransport` from `@kadr/shared/http`, using the app's zone routes (`AdminApiRoutes` in admin, `GalleryApiRoutes` in gallery).
-- `src/services/` — business operations over the API, throwing user-friendly errors.
+- `src/services/` — business operations: call the API through the shared same-origin `http` from `@kadr/shared/http` with the app's zone routes (`AdminApiRoutes` in admin, `GalleryApiRoutes` in gallery), map error codes to user-friendly errors. No separate `api/` layer.
 - `src/composables/` — shared reactive state and logic.
 - `src/components/` — `shared/`, `features/`, `widgets/`.
 - `src/layouts/`, `src/pages/`, `src/router/` (admin only; gallery is a single page without vue-router and reads the gallery token from `location.pathname`).
@@ -291,7 +290,8 @@ export function initGalleryContainer(
 - Shared visual components are **CSS first**: BEM classes in `packages/ui/src/styles/components/*.css` (`.photo-card`, `.photo-card__frame`, `.btn--primary`). The portfolio (Astro) and the Vue apps use the same classes.
 - Vue components in `@kadr/ui` exist only when they remove duplicated markup or add behaviour, contain minimal script and no styles of their own beyond the shared classes. Plain elements with a class (e.g. `<button class="btn btn--primary">`) do not get a Vue wrapper.
 - App-specific layout lives in `<style scoped>` and uses only tokens. Global CSS only in `@kadr/ui` (tokens, base, typography and layout utilities, shared components).
-- `admin` uses PrimeVue components for tables, forms, dialogs and toasts. Do not reimplement what PrimeVue provides.
+- Components with non-trivial behaviour (dialog, alert dialog, drawer, dropdown menu, tabs, toggle group, toast) are built in `@kadr/ui` on top of Reka UI primitives (focus trap, keyboard, ARIA) and styled with our classes. Never hand-roll focus management or ARIA for these.
+- Every app imports `@kadr/ui/styles.css` (fonts, tokens, base, shared component classes). The admin only switches the body font to `--font-family-display` in `src/styles/admin.css`.
 - DRY: duplicated templates become components; duplicated CSS becomes a shared class in `@kadr/ui`.
 
 ---
