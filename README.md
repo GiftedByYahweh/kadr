@@ -11,14 +11,14 @@ Portfolio website and client galleries for a photographer.
 
 ## Structure
 
-| Path              | What                         | Stack                                       |
-| ----------------- | ---------------------------- | ------------------------------------------- |
-| `apps/api`        | Backend API                  | Fastify, Drizzle ORM, PostgreSQL            |
-| `apps/admin`      | Admin panel for photographer | Vue 3, vue-router, TanStack Query, PrimeVue |
-| `apps/gallery`    | Client gallery               | Vue 3                                       |
-| `apps/portfolio`  | Public portfolio site        | Astro (static)                              |
-| `packages/shared` | Shared types and validation  | TypeScript, Zod                             |
-| `packages/ui`     | Shared Vue components        | Vue 3                                       |
+| Path              | What                         | Stack                             |
+| ----------------- | ---------------------------- | --------------------------------- |
+| `apps/api`        | Backend API                  | Fastify, Drizzle ORM, PostgreSQL  |
+| `apps/admin`      | Admin panel for photographer | Vue 3, vue-router, TanStack Query |
+| `apps/gallery`    | Client gallery               | Vue 3                             |
+| `apps/portfolio`  | Public portfolio site        | Astro (static)                    |
+| `packages/shared` | Shared types and validation  | TypeScript, Zod                   |
+| `packages/ui`     | Shared Vue components        | Vue 3                             |
 
 ## Requirements
 

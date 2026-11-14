@@ -127,3 +127,7 @@ export const httpTransport = (baseUrl: string): HttpTransport => ({
   delete: <T = unknown>(url: string, options?: RequestOptions) =>
     sendRequest<T>(baseUrl, { method: 'DELETE', url, options }),
 });
+
+const SAME_ORIGIN = '';
+
+export const http = httpTransport(SAME_ORIGIN);

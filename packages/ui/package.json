@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@kadr/shared": "workspace:*",
-    "photoswipe": "^5.4.4"
+    "photoswipe": "^5.4.4",
+    "reka-ui": "^2.11.0"
   }
 }

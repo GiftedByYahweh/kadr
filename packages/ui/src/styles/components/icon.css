@@ -34,6 +34,26 @@
   mask-image: url('../../icons/send.svg');
 }
 
+.icon--home {
+  mask-image: url('../../icons/home.svg');
+}
+
+.icon--grid {
+  mask-image: url('../../icons/grid.svg');
+}
+
+.icon--image {
+  mask-image: url('../../icons/image.svg');
+}
+
+.icon--settings {
+  mask-image: url('../../icons/settings.svg');
+}
+
+.icon--logout {
+  mask-image: url('../../icons/logout.svg');
+}
+
 .icon--chevron-left {
   mask-image: url('../../icons/chevron-left.svg');
 }

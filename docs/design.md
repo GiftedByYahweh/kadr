@@ -131,15 +131,17 @@ names, so the inverted viewer just swaps tokens.
 
 ### Fonts
 
-`JetBrains Mono` (text) and `Inter` (display title) from Google Fonts, linked
-in each app's HTML. The old portfolio used `Inter` for the title without
+`JetBrains Mono` (text) and `Inter` (display title and admin UI) from Google
+Fonts, imported once in `@kadr/ui` (`styles/fonts.css`). The old portfolio used `Inter` for the title without
 loading it, so it rendered in the system sans-serif; here it is loaded
 explicitly.
 
 ### Admin
 
-The admin keeps PrimeVue (Aura) for tables and forms. Later the Aura preset can
-be mapped to the same tokens (accent, font) so the admin matches the brand.
+The admin uses the same UI system as the gallery: tokens, fonts and component
+classes from `@kadr/ui`, behaviour from Reka UI. No PrimeVue (from v5 it needs
+a commercial license key). Screen mockups: Design canvas linked in the project
+notes.
 
 ### Motion
 
