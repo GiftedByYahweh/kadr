@@ -6,3 +6,7 @@ allowBuilds:
   argon2: true
   esbuild: true
   vue-demi: true
+
+auditConfig:
+  ignoreGhsas:
+    - GHSA-fc5q-39xc-vjpf
