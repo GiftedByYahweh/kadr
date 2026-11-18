@@ -1,5 +1,7 @@
+import { fileURLToPath } from 'node:url';
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
 import type { Logger } from '@logger/index.ts';
 import type { TxContext } from './tx-context.ts';
@@ -9,6 +11,10 @@ export type DbExecutor =
   DbClient | Parameters<Parameters<DbClient['transaction']>[0]>[0];
 
 export class DbProvider {
+  private static readonly MIGRATIONS_FOLDER = fileURLToPath(
+    new URL('./migrations', import.meta.url),
+  );
+
   private pool: Pool;
   private db: DbClient;
 
@@ -35,6 +41,10 @@ export class DbProvider {
 
   async ping(): Promise<void> {
     await this.db.execute(sql`select 1`);
+  }
+
+  async migrate(): Promise<void> {
+    await migrate(this.db, { migrationsFolder: DbProvider.MIGRATIONS_FOLDER });
   }
 
   async close(): Promise<void> {

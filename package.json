@@ -8,10 +8,10 @@
   },
   "scripts": {
     "dev": "pnpm infra:up && pnpm -r --parallel dev",
-    "infra:up": "docker compose up -d --wait",
+    "infra:up": "docker compose up -d --wait postgres",
     "infra:down": "docker compose down",
-    "docker:up": "docker compose --profile full up -d --build --wait",
-    "docker:down": "docker compose --profile full down",
+    "docker:up": "docker compose up -d --build --wait",
+    "docker:down": "docker compose down",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

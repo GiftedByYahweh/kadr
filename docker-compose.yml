@@ -1,14 +1,34 @@
 name: kadr
 
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
+x-api-environment: &api-environment
+  DATABASE_URL: postgres://${POSTGRES_USER:?}:${POSTGRES_PASSWORD:?}@postgres:5432/${POSTGRES_DB:?}
+  PASSWORD_PEPPER: ${PASSWORD_PEPPER:?}
+  STORAGE_ENDPOINT: ${STORAGE_ENDPOINT:?}
+  STORAGE_REGION: ${STORAGE_REGION:?}
+  STORAGE_BUCKET: ${STORAGE_BUCKET:?}
+  STORAGE_ACCESS_KEY_ID: ${STORAGE_ACCESS_KEY_ID:?}
+  STORAGE_SECRET_ACCESS_KEY: ${STORAGE_SECRET_ACCESS_KEY:?}
+  STORAGE_FORCE_PATH_STYLE: ${STORAGE_FORCE_PATH_STYLE:?}
+
+x-api-build: &api-build
+  context: .
+  dockerfile: apps/api/Dockerfile
+
 services:
   postgres:
     image: postgres:17-alpine
+    restart: unless-stopped
+    logging: *logging
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - '${POSTGRES_PORT}:5432'
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${POSTGRES_DB:?}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -17,49 +37,62 @@ services:
       timeout: 3s
       retries: 15
 
-  api:
-    profiles: [full]
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      PASSWORD_PEPPER: ${PASSWORD_PEPPER}
-      STORAGE_ENDPOINT: ${STORAGE_ENDPOINT}
-      STORAGE_REGION: ${STORAGE_REGION}
-      STORAGE_BUCKET: ${STORAGE_BUCKET}
-      STORAGE_ACCESS_KEY_ID: ${STORAGE_ACCESS_KEY_ID}
-      STORAGE_SECRET_ACCESS_KEY: ${STORAGE_SECRET_ACCESS_KEY}
-      STORAGE_FORCE_PATH_STYLE: ${STORAGE_FORCE_PATH_STYLE}
-    ports:
-      - '4000:4000'
+  migrate:
+    image: kadr-api
+    build: *api-build
+    restart: 'no'
+    logging: *logging
+    command: ['node', '--import', 'tsx', 'scripts/migrate.ts']
+    environment: *api-environment
     depends_on:
       postgres:
         condition: service_healthy
 
-  admin:
-    profiles: [full]
-    build:
-      context: .
-      dockerfile: apps/admin/Dockerfile
-    ports:
-      - '5180:80'
+  api:
+    image: kadr-api
+    build: *api-build
+    restart: unless-stopped
+    logging: *logging
+    init: true
+    environment: *api-environment
+    expose:
+      - '4000'
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget -qO- http://127.0.0.1:4000/api/health > /dev/null || exit 1',
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
-  gallery:
-    profiles: [full]
+  caddy:
     build:
       context: .
-      dockerfile: apps/gallery/Dockerfile
+      dockerfile: docker/caddy/Dockerfile
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      ADMIN_ADDRESS: ${ADMIN_ADDRESS:?}
+      GALLERY_ADDRESS: ${GALLERY_ADDRESS:?}
+      PORTFOLIO_ADDRESS: ${PORTFOLIO_ADDRESS:?}
     ports:
-      - '5181:80'
-
-  portfolio:
-    profiles: [full]
-    build:
-      context: .
-      dockerfile: apps/portfolio/Dockerfile
-    ports:
-      - '4321:80'
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      api:
+        condition: service_healthy
 
 volumes:
   postgres-data:
+  caddy-data:
+  caddy-config:

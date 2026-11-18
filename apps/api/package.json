@@ -9,7 +9,7 @@
     "user:create": "tsx --env-file-if-exists=../../.env scripts/create-user.ts",
     "user:set-password": "tsx --env-file-if-exists=../../.env scripts/set-user-password.ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "tsx --env-file-if-exists=../../.env scripts/migrate.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
