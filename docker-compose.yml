@@ -15,6 +15,7 @@ x-api-environment: &api-environment
   STORAGE_ACCESS_KEY_ID: ${STORAGE_ACCESS_KEY_ID:?}
   STORAGE_SECRET_ACCESS_KEY: ${STORAGE_SECRET_ACCESS_KEY:?}
   STORAGE_FORCE_PATH_STYLE: ${STORAGE_FORCE_PATH_STYLE:?}
+  GALLERY_URL: ${GALLERY_URL:?}
 
 x-api-build: &api-build
   context: .

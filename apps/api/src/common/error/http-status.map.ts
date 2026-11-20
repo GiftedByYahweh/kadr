@@ -26,6 +26,9 @@ export const HTTP_STATUS_BY_APP_ERROR: Record<AppErrorCode, HttpStatusCode> = {
   [DomainErrorCode.GALLERY_NOT_FOUND]: HttpStatusCode.NOT_FOUND,
   [DomainErrorCode.GALLERY_EXPIRED]: HttpStatusCode.FORBIDDEN,
   [DomainErrorCode.GALLERY_MEDIA_NOT_FOUND]: HttpStatusCode.NOT_FOUND,
+  [DomainErrorCode.GALLERY_TRASHED]: HttpStatusCode.CONFLICT,
+  [DomainErrorCode.GALLERY_RESTORE_NEEDS_EXPIRY]: HttpStatusCode.BAD_REQUEST,
+  [DomainErrorCode.GALLERY_TITLE_MISMATCH]: HttpStatusCode.BAD_REQUEST,
 
   [DomainErrorCode.INVALID_CREDENTIALS]: HttpStatusCode.UNAUTHORIZED,
 };

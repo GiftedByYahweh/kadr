@@ -1,3 +1,6 @@
+import type { GalleryStatus } from './constants.ts';
+import type { Currency } from './types.ts';
+
 export interface ClientGalleryCommentDto {
   id: string;
   text: string;
@@ -22,4 +25,34 @@ export interface ClientGalleryDto {
   extraPrice: number;
   selectionSubmittedAt: string | null;
   media: ClientGalleryMediaDto[];
+}
+
+export interface AdminGalleryListItemDto {
+  id: string;
+  title: string;
+  status: GalleryStatus;
+  expiresAt: string | null;
+  trashedAt: string | null;
+  createdAt: string;
+  includedCount: number;
+  extraPrice: number;
+  currency: Currency;
+  selectionSubmittedAt: string | null;
+  mediaCount: number;
+  likedCount: number;
+  coverUrl: string | null;
+}
+
+export interface AdminGalleryDto extends AdminGalleryListItemDto {
+  shareUrl: string;
+}
+
+export interface AdminGalleryListPageDto {
+  items: AdminGalleryListItemDto[];
+  hasNextPage: boolean;
+}
+
+export interface AdminGalleryCountsDto {
+  active: number;
+  trashed: number;
 }

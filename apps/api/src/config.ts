@@ -21,6 +21,9 @@ export const loadAppConfig = () => {
       secretAccessKey: requireEnv(env, 'STORAGE_SECRET_ACCESS_KEY'),
       forcePathStyle: env['STORAGE_FORCE_PATH_STYLE'] === 'true',
     },
+    gallery: {
+      url: requireEnv(env, 'GALLERY_URL'),
+    },
   };
 };
 
