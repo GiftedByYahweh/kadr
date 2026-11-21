@@ -8,6 +8,7 @@ export type {
   GalleryListFilter,
   GalleryRepository,
   UpdateGalleryData,
+  UpdateGalleryStatusData,
 } from './repositories/gallery.repository.ts';
 export { DrizzleGalleryRepository } from './repositories/drizzle-gallery.repository.ts';
 export { ListGalleriesUseCase } from './use-cases/list-galleries.use-case.ts';
@@ -22,4 +23,10 @@ export { UpdateGalleryUseCase } from './use-cases/update-gallery.use-case.ts';
 export type { UpdateGalleryInput } from './use-cases/update-gallery.use-case.ts';
 export { RegenerateShareTokenUseCase } from './use-cases/regenerate-share-token.use-case.ts';
 export type { RegenerateShareTokenInput } from './use-cases/regenerate-share-token.use-case.ts';
+export { TrashGalleryUseCase } from './use-cases/trash-gallery.use-case.ts';
+export type { TrashGalleryInput } from './use-cases/trash-gallery.use-case.ts';
+export { RestoreGalleryUseCase } from './use-cases/restore-gallery.use-case.ts';
+export type { RestoreGalleryInput } from './use-cases/restore-gallery.use-case.ts';
+export { DeleteGalleryUseCase } from './use-cases/delete-gallery.use-case.ts';
+export type { DeleteGalleryInput } from './use-cases/delete-gallery.use-case.ts';
 export { galleryRoutes } from './routes/gallery.routes.ts';

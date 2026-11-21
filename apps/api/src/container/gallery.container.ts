@@ -3,11 +3,14 @@ import type { AuthGuard } from '@modules/auth/index.ts';
 import {
   CountGalleriesUseCase,
   CreateGalleryUseCase,
+  DeleteGalleryUseCase,
   DrizzleGalleryRepository,
   galleryRoutes,
   GetGalleryUseCase,
   ListGalleriesUseCase,
   RegenerateShareTokenUseCase,
+  RestoreGalleryUseCase,
+  TrashGalleryUseCase,
   UpdateGalleryUseCase,
 } from '@modules/gallery/index.ts';
 import type { InfrastructureContainer } from './infrastructure.container.ts';
@@ -41,6 +44,18 @@ export function initGalleryContainer(
     infrastructure.tokenService,
     config.gallery.url,
   );
+  const trashGallery = new TrashGalleryUseCase(
+    galleryRepository,
+    config.gallery.url,
+  );
+  const restoreGallery = new RestoreGalleryUseCase(
+    galleryRepository,
+    config.gallery.url,
+  );
+  const deleteGallery = new DeleteGalleryUseCase(
+    galleryRepository,
+    infrastructure.fileStorage,
+  );
 
   const routes = galleryRoutes({
     listGalleries,
@@ -49,6 +64,9 @@ export function initGalleryContainer(
     createGallery,
     updateGallery,
     regenerateShareToken,
+    trashGallery,
+    restoreGallery,
+    deleteGallery,
     authGuard,
   });
 

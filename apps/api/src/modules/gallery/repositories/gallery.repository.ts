@@ -24,6 +24,12 @@ export interface UpdateGalleryData {
   currency: Currency | undefined;
 }
 
+export interface UpdateGalleryStatusData {
+  status: GalleryStatus;
+  trashedAt: Date | null;
+  expiresAt: Date | null;
+}
+
 export interface GalleryListFilter {
   userId: string;
   status: GalleryStatus;
@@ -42,4 +48,7 @@ export interface GalleryRepository {
   create(data: CreateGalleryData): Promise<Gallery>;
   update(id: string, data: UpdateGalleryData): Promise<void>;
   updateShareToken(id: string, shareToken: string): Promise<void>;
+  updateStatus(id: string, data: UpdateGalleryStatusData): Promise<void>;
+  findMediaKeys(galleryId: string): Promise<string[]>;
+  delete(id: string): Promise<void>;
 }
