@@ -49,11 +49,14 @@ export class RestoreGalleryUseCase implements UseCase<
       expiresAt,
     });
 
-    return galleryMapper.toAdminDto({
-      ...gallery,
-      status: GalleryStatus.ACTIVE,
-      trashedAt: null,
-      expiresAt,
-    }, this.galleryUrl);
+    return galleryMapper.toAdminDto(
+      {
+        ...gallery,
+        status: GalleryStatus.ACTIVE,
+        trashedAt: null,
+        expiresAt,
+      },
+      this.galleryUrl,
+    );
   }
 }

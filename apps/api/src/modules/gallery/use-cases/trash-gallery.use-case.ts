@@ -5,7 +5,6 @@ import {
 } from '@kadr/shared';
 import { AppError } from '@common/error/app.error.ts';
 import type { UseCase } from '@common/use-case/use-case.ts';
-import type { GalleryWithStats } from '../entities/gallery.entity.ts';
 import { galleryMapper } from '../mappers/gallery.mapper.ts';
 import type { GalleryRepository } from '../repositories/gallery.repository.ts';
 
@@ -40,10 +39,13 @@ export class TrashGalleryUseCase implements UseCase<
       expiresAt: gallery.expiresAt,
     });
 
-    return galleryMapper.toAdminDto({
-      ...gallery,
-      status: GalleryStatus.TRASHED,
-      trashedAt,
-    }, this.galleryUrl);
+    return galleryMapper.toAdminDto(
+      {
+        ...gallery,
+        status: GalleryStatus.TRASHED,
+        trashedAt,
+      },
+      this.galleryUrl,
+    );
   }
 }

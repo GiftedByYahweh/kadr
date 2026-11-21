@@ -25,9 +25,8 @@ export class DeleteGalleryUseCase implements UseCase<DeleteGalleryInput, void> {
       throw new AppError(DomainErrorCode.GALLERY_TITLE_MISMATCH);
     }
 
-    await this.galleryRepository.delete(input.id);
-
     const mediaKeys = await this.galleryRepository.findMediaKeys(input.id);
+    await this.galleryRepository.delete(input.id);
     await this.fileStorage.delete(mediaKeys);
   }
 }
