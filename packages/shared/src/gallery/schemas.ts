@@ -13,7 +13,10 @@ const galleryTitleSchema = z
   .trim()
   .min(1)
   .max(GALLERY_TITLE_MAX_LENGTH);
-const galleryExpiresAtSchema = z.iso.datetime({ offset: true }).nullable();
+const galleryExpiresAtSchema = z.iso
+  .datetime({ offset: true })
+  .transform((value) => new Date(value))
+  .nullable();
 
 const gallerySettingsSchema = z.object({
   title: galleryTitleSchema,

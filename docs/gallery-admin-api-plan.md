@@ -130,6 +130,7 @@ to `HTTP_STATUS_BY_APP_ERROR` (`apps/api/src/common/error/http-status.map.ts`):
 | `GALLERY_TRASHED`              | `409` |
 | `GALLERY_RESTORE_NEEDS_EXPIRY` | `400` |
 | `GALLERY_TITLE_MISMATCH`       | `400` |
+| `GALLERY_EXPIRY_IN_PAST`       | `400` |
 
 `GALLERY_NOT_FOUND` already exists.
 

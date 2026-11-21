@@ -1,7 +1,9 @@
 import { GalleryMediaStatus, GalleryStatus } from '@kadr/shared';
 import { and, count, desc, eq, isNotNull, sql, type SQL } from 'drizzle-orm';
 import type { DbProvider } from '@db/db.provider.ts';
+import { firstRowOrThrow } from '@db/helpers.ts';
 import type {
+  Gallery,
   GalleryCounts,
   GalleryWithStats,
 } from '../entities/gallery.entity.ts';
@@ -9,8 +11,10 @@ import { galleryMapper } from '../mappers/gallery.mapper.ts';
 import { galleriesTable } from '../tables/galleries.table.ts';
 import { galleryMediaTable } from '../tables/gallery-media.table.ts';
 import type {
+  CreateGalleryData,
   GalleryListFilter,
   GalleryRepository,
+  UpdateGalleryData,
 } from './gallery.repository.ts';
 
 export class DrizzleGalleryRepository implements GalleryRepository {
@@ -61,6 +65,31 @@ export class DrizzleGalleryRepository implements GalleryRepository {
       counts[row.status] = row.total;
     }
     return counts;
+  }
+
+  async create(data: CreateGalleryData): Promise<Gallery> {
+    const rows = await this.db
+      .current()
+      .insert(galleriesTable)
+      .values(data)
+      .returning();
+    return galleryMapper.toEntity(firstRowOrThrow(rows));
+  }
+
+  async update(id: string, data: UpdateGalleryData): Promise<void> {
+    await this.db
+      .current()
+      .update(galleriesTable)
+      .set(data)
+      .where(eq(galleriesTable.id, id));
+  }
+
+  async updateShareToken(id: string, shareToken: string): Promise<void> {
+    await this.db
+      .current()
+      .update(galleriesTable)
+      .set({ shareToken })
+      .where(eq(galleriesTable.id, id));
   }
 
   private selectWithStats() {
