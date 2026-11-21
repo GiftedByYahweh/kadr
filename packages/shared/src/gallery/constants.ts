@@ -1,6 +1,5 @@
 export const GalleryStatus = {
   ACTIVE: 'active',
-  ARCHIVED: 'archived',
   TRASHED: 'trashed',
 } as const;
 

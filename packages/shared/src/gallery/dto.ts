@@ -23,3 +23,29 @@ export interface ClientGalleryDto {
   selectionSubmittedAt: string | null;
   media: ClientGalleryMediaDto[];
 }
+export interface AdminGalleryDto {
+  id: string;
+  title: string;
+  status: string;
+  expiresAt: string | null;
+  trashedAt: string | null;
+  createdAt: string;
+  mediaCount: number;
+  likedCount: number;
+  coverUrl: string | null;
+  includedCount: number;
+  extraPrice: number;
+  selectionSubmittedAt: string | null;
+  shareUrl: string;
+}
+export interface AdminGalleryListItemDto {
+  id: string;
+  title: string;
+  status: string;
+  expiresAt: string | null;
+  trashedAt: string | null;
+  createdAt: string;
+  mediaCount: number;
+  likedCount: number;
+  coverUrl: string | null;
+}
