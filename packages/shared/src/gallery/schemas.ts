@@ -39,7 +39,11 @@ export const listGalleriesQuerySchema = z.object({
 
 export const createGalleryRequestSchema = gallerySettingsSchema;
 
-export const updateGalleryRequestSchema = gallerySettingsSchema.partial();
+export const updateGalleryRequestSchema = gallerySettingsSchema
+  .partial()
+  .refine((body) => Object.keys(body).length > 0, {
+    error: 'At least one field is required',
+  });
 
 export const restoreGalleryRequestSchema = z.object({
   expiresAt: galleryExpiresAtSchema.optional(),
