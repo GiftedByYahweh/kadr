@@ -6,14 +6,21 @@ import {
   type UserRepository,
 } from '@modules/auth/index.ts';
 
+import {
+  DrizzleGalleryRepository,
+  type GalleryRepository,
+} from '@modules/gallery/index.ts'
+
 export interface Repositories {
   user: UserRepository;
   session: SessionRepository;
+  gallery: GalleryRepository
 }
 
 export function initRepositories(dbProvider: DbProvider): Repositories {
   const user = new DrizzleUserRepository(dbProvider);
   const session = new DrizzleSessionRepository(dbProvider);
-
-  return { user, session };
+  const gallery = new DrizzleGalleryRepository(dbProvider);
+  
+  return { user, session, gallery};
 }

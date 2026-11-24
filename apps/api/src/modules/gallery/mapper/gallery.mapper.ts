@@ -1,6 +1,6 @@
 import type { AdminGalleryDto, AdminGalleryListItemDto} from '@kadr/shared';
 import type { Gallery } from '../entities/gallery.entity.ts';
-import type { galleriesTable } from '../tables/galleries.table.ts';
+import { galleriesTable } from '../tables/galleries.table.ts';
 
 type GalleryRow = typeof galleriesTable.$inferSelect;
 
@@ -35,7 +35,7 @@ export const galleryMapper = {
             includedCount: gallery.includedCount,
             extraPrice: gallery.extraPrice,
             selectionSubmittedAt: gallery.selectionSubmittedAt ? gallery.selectionSubmittedAt.toISOString() : null, 
-            shareUrl: `http://localhost:3000/gallery/${gallery.shareToken}`,
+            shareUrl: gallery.shareToken,
         }
     },
     toListAdminDto(gallery: Gallery): AdminGalleryListItemDto{

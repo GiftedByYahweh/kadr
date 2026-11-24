@@ -23,7 +23,7 @@ export class CreateUserUseCase implements UseCase<
   async execute(input: CreateUserInput): Promise<CurrentUserDto> {
     const existing = await this.userRepository.findByEmail(input.email);
     if (existing) {
-      throw new AppError(HttpStatusCode.CONFLICT, 'Email is already taken');
+      throw new AppError(HttpStatusCode.CONFLICT);
     }
 
     const passwordHash = await this.passwordHasher.hash(input.password);

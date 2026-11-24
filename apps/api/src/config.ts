@@ -7,6 +7,7 @@ export const loadAppConfig = () => {
     port: Number(requireEnv(env, 'PORT')),
     host: requireEnv(env, 'HOST'),
     isProduction: env['NODE_ENV'] === 'production',
+    galleryUrl: requireEnv(env, 'GALLERY_URL'),
     db: {
       url: requireEnv(env, 'DATABASE_URL'),
     },

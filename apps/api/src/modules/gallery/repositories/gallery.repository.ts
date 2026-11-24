@@ -11,6 +11,6 @@ export interface CreateGalleryData {
 
 export interface GalleryRepository {
     findById(id: string): Promise<Gallery | null>,
-    findActiveByUserId(userId: string): Promise<Gallery> | null,
+    findActiveByUserId(userId: string): Promise<Gallery | null>,
     create(data: CreateGalleryData): Promise<Gallery>
 }
