@@ -26,6 +26,7 @@ export const galleriesTable = pgTable(
     title: text('title').notNull(),
     shareToken: text('share_token').notNull().unique(),
     status: galleryStatusEnum('status').notNull().default(GalleryStatus.ACTIVE),
+    trashedAt: timestamp('trashed_at', { withTimezone: true}),
     expiresAt: timestamp('expires_at', { withTimezone: true }),
     includedCount: integer('included_count').notNull(),
     extraPrice: integer('extra_price').notNull(),
