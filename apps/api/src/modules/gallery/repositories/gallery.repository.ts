@@ -1,3 +1,4 @@
+import type { GalleryStatus } from "@kadr/shared";
 import type { Gallery } from "../entities/gallery.entity";
 
 export interface CreateGalleryData {
@@ -7,6 +8,7 @@ export interface CreateGalleryData {
     includedCount: number;
     extraPrice: number;
     expiresAt: Date | null;
+    status: GalleryStatus
 }
 
 export interface GalleryRepository {

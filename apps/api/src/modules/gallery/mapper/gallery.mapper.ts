@@ -21,7 +21,7 @@ export const galleryMapper = {
             updatedAt: row.updatedAt,
         }
     },
-    toAdminDto(gallery: Gallery): AdminGalleryDto{
+    toAdminDto(gallery: Gallery, baseUrl: string): AdminGalleryDto{
         return {
             id: gallery.id,
             title: gallery.title,
@@ -35,7 +35,7 @@ export const galleryMapper = {
             includedCount: gallery.includedCount,
             extraPrice: gallery.extraPrice,
             selectionSubmittedAt: gallery.selectionSubmittedAt ? gallery.selectionSubmittedAt.toISOString() : null, 
-            shareUrl: gallery.shareToken,
+            shareUrl: `${baseUrl}/gallery/${gallery.shareToken}`,
         }
     },
     toListAdminDto(gallery: Gallery): AdminGalleryListItemDto{
