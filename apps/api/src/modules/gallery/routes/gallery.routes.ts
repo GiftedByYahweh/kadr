@@ -1,18 +1,20 @@
-import { GalleryApiRoutes, type AdminGalleryDto } from '@kadr/shared';
+import { GalleryApiRoutes, type AdminGalleryDto, type AdminGalleryListItemDto  } from '@kadr/shared';
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import { AuthGuard } from '../../auth/guards/auth.guard.ts';
 import  { CreateGalleryUseCase } from '../use-cases/create-gallery.use-case.ts';
-import { createGalleryRouteSchema } from './gallery.schema.ts';
+import { ListGalleryUseCase } from '../use-cases/list-galleries.use-case.ts';
+import { createGalleryRouteSchema, listGalleriesRouteSchema } from './gallery.schema.ts';
 
 export interface GalleryRoutesOptions{
     createGalleryUseCase: CreateGalleryUseCase,
     authGuard: AuthGuard,
+    listGalleriesUseCase: ListGalleryUseCase,
 }
 
 export function galleryRoutes(
     options: GalleryRoutesOptions,
 ): FastifyPluginCallbackZod {
-    const {createGalleryUseCase, authGuard} = options;
+    const {createGalleryUseCase, authGuard, listGalleriesUseCase} = options;
     const guard = authGuard.handle.bind(authGuard);
 
     return (server, _pluginOptions, done) => { 
@@ -31,9 +33,25 @@ export function galleryRoutes(
                     includedCount: request.body.includedCount,
                     extraPrice: request.body.extraPrice,
                     expiresAt: request.body.expiresAt ? new Date(request.body.expiresAt): null,
-                });
+                },
+            );
+            
             }
-        )
+        ),
+        server.get(
+                GalleryApiRoutes.list,
+                {
+                    schema: listGalleriesRouteSchema,
+                    onRequest: guard,
+                },
+                async(request): Promise<AdminGalleryListItemDto[]> => {
+                    const auth = AuthGuard.getAuth(request);
+                    return listGalleriesUseCase.execute({
+                        userId: auth.userId,
+                        ...(request.query.status ? { status: request.query.status } : {}),
+                    });
+                },
+            );
         done()
     }
 }

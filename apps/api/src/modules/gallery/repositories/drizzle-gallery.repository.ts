@@ -45,4 +45,17 @@ export class DrizzleGalleryRepository implements GalleryRepository {
         return galleryMapper.toEntity(firstRowOrThrow(rows))
 
     }
+
+    async findManyByUserId(userId: string, status?: GalleryStatus): Promise<Gallery[]> {
+        const conditions = [eq(galleriesTable.userId, userId)];
+        if(status) {
+            conditions.push(eq(galleriesTable.status, status));
+        }
+        const rows = await this.db
+        .current()
+        .select()
+        .from(galleriesTable)
+        .where(and(...conditions) );
+          return rows.map(row=> galleryMapper.toEntity(row))
+    }
 }
