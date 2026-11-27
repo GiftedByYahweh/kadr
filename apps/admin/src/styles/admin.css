@@ -1,3 +1,13 @@
+:root {
+  --radius: 6px;
+  --radius-dialog: 10px;
+  --dialog-padding-top: var(--space-4);
+  --dialog-header-padding: var(--space-3);
+  --dialog-header-border: 1px solid var(--color-border);
+  --control-height: 40px;
+  --button-padding: 9px 18px;
+}
+
 body {
   font-family: var(--font-family-display);
 }

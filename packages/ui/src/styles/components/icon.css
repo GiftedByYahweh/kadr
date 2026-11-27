@@ -58,6 +58,10 @@
   mask-image: url('../../icons/chevron-left.svg');
 }
 
+.icon--chevron-down {
+  mask-image: url('../../icons/chevron-down.svg');
+}
+
 .icon--chevron-right {
   mask-image: url('../../icons/chevron-right.svg');
 }
@@ -68,6 +72,38 @@
 
 .icon--heart-filled {
   mask-image: url('../../icons/heart-filled.svg');
+}
+
+.icon--plus {
+  mask-image: url('../../icons/plus.svg');
+}
+
+.icon--search {
+  mask-image: url('../../icons/search.svg');
+}
+
+.icon--lock {
+  mask-image: url('../../icons/lock.svg');
+}
+
+.icon--trash {
+  mask-image: url('../../icons/trash.svg');
+}
+
+.icon--link {
+  mask-image: url('../../icons/link.svg');
+}
+
+.icon--sliders {
+  mask-image: url('../../icons/sliders.svg');
+}
+
+.icon--more {
+  mask-image: url('../../icons/more.svg');
+}
+
+.icon--external {
+  mask-image: url('../../icons/external.svg');
 }
 
 .icon--pop {

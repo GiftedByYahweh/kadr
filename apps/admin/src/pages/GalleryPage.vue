@@ -1,37 +1,37 @@
 <script setup lang="ts">
+import { AppEmptyState } from '@kadr/ui';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import ActiveGallery from '@/components/widgets/ActiveGallery.vue';
+import TrashedGallery from '@/components/widgets/TrashedGallery.vue';
+import { useGallery } from '@/composables/useGalleryQueries.ts';
 import { RouteName } from '@/router/route-names.ts';
 
 const route = useRoute();
+const galleryId = computed(() => String(route.params['id']));
+const gallery = useGallery(galleryId);
 </script>
 
 <template>
-  <section class="gallery">
-    <RouterLink
-      :to="{ name: RouteName.GALLERIES }"
-      class="text-upper text-secondary gallery__back"
+  <section class="gallery-page">
+    <template v-if="gallery.data.value">
+      <TrashedGallery
+        v-if="gallery.data.value.trashedAt !== null"
+        :gallery="gallery.data.value"
+      />
+      <ActiveGallery v-else :gallery="gallery.data.value" />
+    </template>
+
+    <AppEmptyState
+      v-else-if="gallery.isError.value"
+      :title="gallery.error.value?.message ?? ''"
     >
-      ← Усі галереї
-    </RouterLink>
-    <h1 class="gallery__title">Галерея {{ route.params['id'] }}</h1>
-    <p class="text-secondary">Тут з'явиться сторінка галереї.</p>
+      <RouterLink
+        :to="{ name: RouteName.GALLERIES }"
+        class="text-secondary text-hover"
+      >
+        ← Галереї
+      </RouterLink>
+    </AppEmptyState>
   </section>
 </template>
-
-<style scoped>
-.gallery {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.gallery__back {
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-s);
-}
-
-.gallery__title {
-  font-size: var(--font-size-l);
-  line-height: var(--line-height-tight);
-}
-</style>
