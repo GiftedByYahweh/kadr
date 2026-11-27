@@ -216,6 +216,7 @@ export function initGalleryContainer(
   - `GalleryApiRoutes` (`gallery.ts`) — `/api/gallery/*`, gallery link access;
   - `PublicApiRoutes` (`public.ts`) — `/api/public/*`, added with the portfolio.
 - The API has three zones with different auth: `admin` (photographer session), `gallery` (secret gallery link), `public` (portfolio build, read-only).
+- Rate limiting is per route, not global: routes that can be abused (login, upload start, gallery token lookup) set `config: { rateLimit: <CONSTANT> }` with a named constant. Volumetric protection is Cloudflare's job.
 
 ### 4.8 Isolation & Dependency Injection
 
