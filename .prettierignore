@@ -3,3 +3,6 @@ dist/
 .astro/
 coverage/
 **/db/migrations/
+.terraform/
+*.tfstate
+*.tfstate.backup

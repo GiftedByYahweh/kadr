@@ -47,6 +47,5 @@ export interface GalleryRepository {
   update(id: string, data: UpdateGalleryData): Promise<void>;
   updateShareToken(id: string, shareToken: string): Promise<void>;
   updateTrash(id: string, data: UpdateGalleryTrashData): Promise<void>;
-  findMediaKeys(galleryId: string): Promise<string[]>;
   delete(id: string): Promise<void>;
 }

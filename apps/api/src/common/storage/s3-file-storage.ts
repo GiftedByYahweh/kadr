@@ -1,6 +1,9 @@
 import {
   DeleteObjectsCommand,
   GetObjectCommand,
+  HeadObjectCommand,
+  ListObjectsV2Command,
+  NotFound,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -10,6 +13,7 @@ import type {
   FileStorage,
   PresignDownloadInput,
   PresignUploadInput,
+  StoredFile,
 } from './file-storage.ts';
 
 export interface S3FileStorageConfig {
@@ -74,11 +78,39 @@ export class S3FileStorage implements FileStorage {
     });
   }
 
+  async head(key: string): Promise<StoredFile | null> {
+    const command = new HeadObjectCommand({ Bucket: this.bucket, Key: key });
+    try {
+      const output = await this.client.send(command);
+      return {
+        sizeBytes: output.ContentLength ?? 0,
+        contentType: output.ContentType ?? null,
+      };
+    } catch (error) {
+      if (error instanceof NotFound) return null;
+      throw error;
+    }
+  }
+
   async delete(keys: string[]): Promise<void> {
     const batches = chunk(keys, S3FileStorage.DELETE_BATCH_SIZE);
     for (const batch of batches) {
       await this.deleteBatch(batch);
     }
+  }
+
+  async deletePrefix(prefix: string): Promise<void> {
+    const command = new ListObjectsV2Command({
+      Bucket: this.bucket,
+      Prefix: prefix,
+    });
+    const page = await this.client.send(command);
+    const objects = page.Contents ?? [];
+    const keys = objects.flatMap((object) => (object.Key ? [object.Key] : []));
+    if (keys.length === 0) return;
+
+    await this.deleteBatch(keys);
+    if (page.IsTruncated) await this.deletePrefix(prefix);
   }
 
   private async deleteBatch(keys: string[]): Promise<void> {
