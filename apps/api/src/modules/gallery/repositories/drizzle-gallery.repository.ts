@@ -103,24 +103,6 @@ export class DrizzleGalleryRepository implements GalleryRepository {
       .where(eq(galleriesTable.id, id));
   }
 
-  async findMediaKeys(galleryId: string): Promise<string[]> {
-    const rows = await this.db
-      .current()
-      .select({
-        storageKey: galleryMediaTable.storageKey,
-        previewKey: galleryMediaTable.previewKey,
-      })
-      .from(galleryMediaTable)
-      .where(eq(galleryMediaTable.galleryId, galleryId));
-
-    const keys: string[] = [];
-    for (const row of rows) {
-      keys.push(row.storageKey);
-      if (row.previewKey) keys.push(row.previewKey);
-    }
-    return keys;
-  }
-
   async delete(id: string): Promise<void> {
     await this.db
       .current()

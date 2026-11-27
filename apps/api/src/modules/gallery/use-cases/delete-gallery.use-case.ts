@@ -1,6 +1,10 @@
 import { DomainErrorCode, type DeleteGalleryQuery } from '@kadr/shared';
 import { AppError } from '@common/error/app.error.ts';
 import type { FileStorage } from '@common/storage/file-storage.ts';
+import {
+  MediaArea,
+  mediaStorageKeys,
+} from '@common/storage/media-storage-keys.ts';
 import type { UseCase } from '@common/use-case/use-case.ts';
 import type { GalleryRepository } from '../repositories/gallery.repository.ts';
 
@@ -25,8 +29,12 @@ export class DeleteGalleryUseCase implements UseCase<DeleteGalleryInput, void> {
       throw new AppError(DomainErrorCode.GALLERY_TITLE_MISMATCH);
     }
 
-    const mediaKeys = await this.galleryRepository.findMediaKeys(input.id);
     await this.galleryRepository.delete(input.id);
-    await this.fileStorage.delete(mediaKeys);
+    const prefix = mediaStorageKeys.areaPrefix(
+      gallery.userId,
+      MediaArea.GALLERIES,
+      gallery.id,
+    );
+    await this.fileStorage.deletePrefix(prefix);
   }
 }
