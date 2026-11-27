@@ -30,7 +30,7 @@ const formId = useId();
     </form>
 
     <template #actions>
-      <button type="button" class="btn" @click="emit('close')">
+      <button type="button" class="btn dialog__cancel" @click="emit('close')">
         Скасувати
       </button>
       <button

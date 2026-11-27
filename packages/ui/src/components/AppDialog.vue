@@ -31,7 +31,7 @@ function onOpenChange(isOpen: boolean) {
             <DialogTitle class="dialog__title text-upper">
               {{ title }}
             </DialogTitle>
-            <DialogClose class="icon-button" aria-label="Закрити">
+            <DialogClose class="icon-button dialog__close" aria-label="Закрити">
               <span class="icon icon--close" />
             </DialogClose>
           </header>

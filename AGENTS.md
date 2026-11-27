@@ -295,7 +295,7 @@ export function initGalleryContainer(
 - Vue components in `@kadr/ui` exist only when they remove duplicated markup or add behaviour, contain minimal script and no styles of their own beyond the shared classes. Plain elements with a class (e.g. `<button class="btn btn--primary">`) do not get a Vue wrapper.
 - App-specific layout lives in `<style scoped>` and uses only tokens. Global CSS only in `@kadr/ui` (tokens, base, typography and layout utilities, shared components).
 - Components with non-trivial behaviour (dialog, alert dialog, drawer, dropdown menu, tabs, toggle group, toast) are built in `@kadr/ui` on top of Reka UI primitives (focus trap, keyboard, ARIA) and styled with our classes. Never hand-roll focus management or ARIA for these.
-- Every app imports `@kadr/ui/styles.css` (fonts, tokens, base, shared component classes). The admin only switches the body font to `--font-family-display` in `src/styles/admin.css`.
+- Every app imports `@kadr/ui/styles.css` (fonts, tokens, base, shared component classes). The admin's `src/styles/admin.css` only switches the body font to `--font-family-display` and overrides tokens (radius, control height, button padding, dialog spacing); app-specific look is changed through tokens, never by overriding component classes.
 - DRY: duplicated templates become components; duplicated CSS becomes a shared class in `@kadr/ui`.
 
 ---

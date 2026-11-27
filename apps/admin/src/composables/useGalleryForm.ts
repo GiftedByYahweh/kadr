@@ -9,7 +9,7 @@ import type { GallerySettingsInput } from '@/services/galleries.types.ts';
 
 const WHOLE_NUMBER_PATTERN = /^\d+$/;
 const TITLE_ERROR = 'Вкажіть назву галереї';
-const NUMBER_ERROR = 'Ціле число, 0 або більше';
+const NUMBER_ERROR = 'Ціле число від 0';
 const DATE_ERROR = 'Оберіть дату доступу';
 
 export interface GalleryFormValues {

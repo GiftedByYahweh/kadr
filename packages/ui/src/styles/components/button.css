@@ -72,3 +72,8 @@
   background: var(--color-success-bg);
   color: var(--color-success-text);
 }
+
+.btn--primary.btn--icon {
+  border-color: var(--color-accent);
+  color: var(--color-on-accent);
+}

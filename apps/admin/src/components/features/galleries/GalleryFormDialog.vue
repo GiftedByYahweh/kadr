@@ -14,9 +14,9 @@ import { accessTermOf, defaultAccessTerm } from './gallery-access.ts';
 const ID_PREFIX = 'gallery-form';
 
 const CURRENCY_OPTIONS = [
-  { value: Currency.UAH, label: '₴ (гривня)' },
-  { value: Currency.EUR, label: '€ (євро)' },
-  { value: Currency.USD, label: '$ (долар)' },
+  { value: Currency.UAH, label: '₴ UAH' },
+  { value: Currency.EUR, label: '€ EUR' },
+  { value: Currency.USD, label: '$ USD' },
 ];
 
 const { gallery = null } = defineProps<{ gallery?: AdminGalleryDto | null }>();
@@ -86,19 +86,19 @@ function submit() {
       hint="Великий заголовок на обкладинці галереї"
       :error="form.errors.value.title"
     />
-    <AppTextField
-      :id="`${ID_PREFIX}-included`"
-      v-model="form.values.includedCount"
-      label="Фото в пакеті"
-      placeholder="30"
-      input-mode="numeric"
-      :error="form.errors.value.includedCount"
-    />
     <div class="gallery-form__row">
+      <AppTextField
+        :id="`${ID_PREFIX}-included`"
+        v-model="form.values.includedCount"
+        label="Фото в пакеті"
+        placeholder="30"
+        input-mode="numeric"
+        :error="form.errors.value.includedCount"
+      />
       <AppTextField
         :id="`${ID_PREFIX}-price`"
         v-model="form.values.extraPrice"
-        label="Доплата за фото"
+        label="Доплата"
         placeholder="150"
         input-mode="numeric"
         :error="form.errors.value.extraPrice"
@@ -125,7 +125,7 @@ function submit() {
 <style scoped>
 .gallery-form__row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-4);
 }

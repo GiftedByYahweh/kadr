@@ -44,7 +44,9 @@ function onOpenChange(isOpen: boolean) {
         </AlertDialogDescription>
         <slot />
         <div class="dialog__actions">
-          <AlertDialogCancel class="btn">Скасувати</AlertDialogCancel>
+          <AlertDialogCancel class="btn dialog__cancel"
+            >Скасувати</AlertDialogCancel
+          >
           <button
             type="submit"
             class="btn"

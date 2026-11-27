@@ -73,6 +73,9 @@
 
   --radius: 2px;
   --radius-dialog: 0;
+  --dialog-padding-top: var(--space-5);
+  --dialog-header-padding: 0;
+  --dialog-header-border: none;
   --control-height: 44px;
   --button-padding: 10px 30px;
   --icon-size: 24px;

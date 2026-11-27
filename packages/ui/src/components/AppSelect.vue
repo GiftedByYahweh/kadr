@@ -3,7 +3,6 @@ import {
   SelectContent,
   SelectIcon,
   SelectItem,
-  SelectItemIndicator,
   SelectItemText,
   SelectPortal,
   SelectRoot,
@@ -69,7 +68,6 @@ function select(value: unknown) {
                 :value="item.value"
               >
                 <SelectItemText>{{ item.label }}</SelectItemText>
-                <SelectItemIndicator class="icon icon--s icon--check" />
               </SelectItem>
             </SelectViewport>
           </SelectContent>

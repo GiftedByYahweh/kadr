@@ -75,35 +75,31 @@ const emptyState = computed(() => {
 
 <template>
   <section class="galleries">
-    <header class="galleries__header">
-      <div class="galleries__heading">
-        <h1 class="galleries__title">Галереї клієнтів</h1>
-        <p class="text-secondary">
-          Зйомки, які клієнти переглядають і з яких обирають фото
-        </p>
-      </div>
-      <button
-        type="button"
-        class="btn btn--primary"
-        @click="newGalleryOpen = true"
-      >
-        <span class="icon icon--s icon--plus" />
-        Нова галерея
-      </button>
-    </header>
+    <h1 class="visually-hidden">Галереї</h1>
 
     <AppTabs v-model="tab" label="Статус галерей" :items="tabs">
       <template #aside>
-        <label class="galleries__search">
-          <span class="icon icon--s icon--search" />
-          <span class="visually-hidden">Пошук галерей</span>
-          <input
-            v-model="search"
-            class="galleries__search-input"
-            type="search"
-            placeholder="Пошук за назвою"
-          />
-        </label>
+        <div class="galleries__tools">
+          <label class="galleries__search">
+            <span class="icon icon--s icon--search" />
+            <span class="visually-hidden">Пошук галерей</span>
+            <input
+              v-model="search"
+              class="galleries__search-input"
+              type="search"
+              placeholder="Пошук за назвою"
+            />
+          </label>
+          <button
+            type="button"
+            class="btn btn--primary btn--icon"
+            aria-label="Нова галерея"
+            title="Нова галерея"
+            @click="newGalleryOpen = true"
+          >
+            <span class="icon icon--s icon--plus" />
+          </button>
+        </div>
       </template>
 
       <p v-if="list.isError.value" class="notice notice--danger" role="alert">
@@ -157,23 +153,11 @@ const emptyState = computed(() => {
   gap: var(--space-6);
 }
 
-.galleries__header {
+.galleries__tools {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.galleries__heading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.galleries__title {
-  font-size: var(--font-size-l);
-  line-height: var(--line-height-tight);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
 .galleries__search {
@@ -181,7 +165,6 @@ const emptyState = computed(() => {
   align-items: center;
   gap: var(--space-2);
   min-height: var(--control-height);
-  margin-bottom: var(--space-2);
   padding: 0 var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -202,8 +185,8 @@ const emptyState = computed(() => {
 
 .galleries__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-6) var(--space-5);
 }
 
 .galleries__more {

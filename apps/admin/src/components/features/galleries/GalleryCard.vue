@@ -6,7 +6,6 @@ import {
   accessText,
   deletionDate,
   gallerySelectionState,
-  mediaCountText,
   SELECTION_STATE_BADGES,
   SELECTION_STATE_LABELS,
   selectionText,
@@ -15,21 +14,15 @@ import {
 const { gallery } = defineProps<{ gallery: AdminGalleryListItemDto }>();
 
 const now = new Date();
+const isTrashed = gallery.trashedAt !== null;
+const state = gallerySelectionState(gallery);
 
-const access = computed(() =>
-  gallery.trashedAt === null ? accessText(gallery, now) : 'Доступ вимкнено',
-);
-
-const badge = computed(() => {
+const line = computed(() => {
   if (gallery.trashedAt !== null) {
-    const date = formatDate(deletionDate(gallery.trashedAt), now);
-    return { label: `Видалиться ${date}`, className: 'badge--muted' };
+    return `Видалиться ${formatDate(deletionDate(gallery.trashedAt), now)}`;
   }
-  const state = gallerySelectionState(gallery);
-  return {
-    label: SELECTION_STATE_LABELS[state],
-    className: SELECTION_STATE_BADGES[state],
-  };
+  const access = accessText(gallery, now).toLowerCase();
+  return `${selectionText(gallery)} · ${access}`;
 });
 </script>
 
@@ -38,25 +31,32 @@ const badge = computed(() => {
     :to="{ name: RouteName.GALLERY, params: { id: gallery.id } }"
     class="gallery-card"
   >
-    <div class="gallery-card__cover">
+    <div
+      class="gallery-card__cover"
+      :class="{ 'gallery-card__cover--trashed': isTrashed }"
+    >
       <img
         v-if="gallery.coverUrl"
         class="gallery-card__image"
         :src="gallery.coverUrl"
         alt=""
       />
-      <span class="gallery-card__count text-upper">
-        {{ mediaCountText(gallery.mediaCount) }}
+      <span
+        v-if="!isTrashed"
+        class="badge gallery-card__badge"
+        :class="SELECTION_STATE_BADGES[state]"
+      >
+        {{ SELECTION_STATE_LABELS[state] }}
+      </span>
+      <span class="gallery-card__count" title="Фото">
+        <span class="icon icon--s icon--image" />
+        {{ gallery.mediaCount }}
       </span>
     </div>
-    <span class="gallery-card__title">{{ gallery.title }}</span>
-    <div class="gallery-card__status">
-      <span class="badge" :class="badge.className">{{ badge.label }}</span>
-      <span>{{ selectionText(gallery) }}</span>
+    <div class="gallery-card__info">
+      <span class="gallery-card__title">{{ gallery.title }}</span>
+      <span class="gallery-card__line text-secondary">{{ line }}</span>
     </div>
-    <span class="gallery-card__access text-secondary">
-      {{ access }}
-    </span>
   </RouterLink>
 </template>
 
@@ -75,39 +75,51 @@ const badge = computed(() => {
   background: var(--color-muted);
 }
 
+.gallery-card__cover--trashed {
+  opacity: var(--disabled-dim);
+}
+
 .gallery-card__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.gallery-card__count {
+.gallery-card__badge {
   position: absolute;
   top: var(--space-3);
   left: var(--space-3);
+}
+
+.gallery-card__count {
+  position: absolute;
+  bottom: var(--space-3);
+  left: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius);
   background: var(--color-overlay);
   color: var(--color-inverse-text);
-  font-family: var(--font-family-base);
   font-size: var(--font-size-s);
+  font-weight: 600;
+}
+
+.gallery-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .gallery-card__title {
-  font-size: var(--font-size-lead);
+  font-size: var(--font-size-m);
   font-weight: 600;
   line-height: var(--line-height-tight);
   transition: color var(--duration-base) var(--ease);
 }
 
-.gallery-card__status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.gallery-card__access {
+.gallery-card__line {
   font-size: var(--font-size-s);
 }
 
