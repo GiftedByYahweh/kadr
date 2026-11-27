@@ -3,6 +3,7 @@
 @import './base.css';
 @import './typography.css';
 @import './layout.css';
+@import './components/badge.css';
 @import './components/button.css';
 @import './components/field.css';
 @import './components/notice.css';
@@ -10,5 +11,11 @@
 @import './components/icon.css';
 @import './components/comments-panel.css';
 @import './components/dialog.css';
+@import './components/alert-dialog.css';
+@import './components/dropdown-menu.css';
+@import './components/select.css';
+@import './components/empty-state.css';
+@import './components/form-dialog.css';
+@import './components/tabs.css';
 @import 'photoswipe/style.css';
 @import './components/viewer.css';

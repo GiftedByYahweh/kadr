@@ -1,0 +1,33 @@
+.alert-dialog__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  background: var(--color-overlay);
+  backdrop-filter: blur(4px);
+}
+
+.alert-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: var(--z-dialog);
+  translate: -50% -50%;
+  width: min(var(--dialog-width), calc(100% - 2 * var(--space-4)));
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  border-radius: var(--radius-dialog);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.alert-dialog__title {
+  font-size: var(--font-size-lead);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+}
+
+.alert-dialog__description {
+  line-height: var(--line-height-base);
+  color: var(--color-text-secondary);
+}

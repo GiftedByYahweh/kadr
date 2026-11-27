@@ -71,6 +71,7 @@ function submit() {
         v-model="form.email"
         class="field__control"
         type="email"
+        placeholder="you@example.com"
         autocomplete="email"
         :aria-invalid="emailError !== ''"
         :aria-describedby="messageId"
@@ -88,6 +89,7 @@ function submit() {
         v-model="form.password"
         class="field__control"
         type="password"
+        placeholder="••••••••"
         autocomplete="current-password"
         :aria-invalid="passwordError !== ''"
         :aria-describedby="messageId"
@@ -100,7 +102,7 @@ function submit() {
 
     <button
       type="submit"
-      class="btn btn--primary btn--block text-upper"
+      class="btn btn--primary btn--block"
       :disabled="login.isPending.value"
     >
       Увійти

@@ -7,14 +7,13 @@ import {
   type LoginRequest,
 } from '@kadr/shared';
 import { http } from '@kadr/shared/http';
+import { GENERIC_ERROR_MESSAGE } from './error-messages.ts';
 
 const LOGIN_ERROR_MESSAGES: Partial<Record<number, string>> = {
   [DomainErrorCode.INVALID_CREDENTIALS]: 'Невірний email або пароль',
   [HttpStatusCode.TOO_MANY_REQUESTS]:
     'Забагато спроб. Спробуйте ще раз за хвилину',
 };
-
-const GENERIC_ERROR_MESSAGE = 'Щось пішло не так. Спробуйте ще раз';
 
 function loginErrorMessage(response: ApiErrorResponse): string {
   return LOGIN_ERROR_MESSAGES[response.code] ?? GENERIC_ERROR_MESSAGE;

@@ -72,7 +72,9 @@
   --selection-bar-height: 72px;
 
   --radius: 2px;
+  --radius-dialog: 0;
   --control-height: 44px;
+  --button-padding: 10px 30px;
   --icon-size: 24px;
   --icon-size-s: 16px;
 
@@ -89,6 +91,8 @@
 
   --z-header: 10;
   --z-viewer: 100;
+  --z-dialog: 200;
+  --z-menu: 300;
 }
 
 @media (max-width: 800px) {
