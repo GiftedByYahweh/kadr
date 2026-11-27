@@ -4,8 +4,8 @@ import {
   accessTermExpiry,
   isAccessTermComplete,
   type AccessTermValue,
-} from '@/components/features/galleries/gallery-access.ts';
-import type { GallerySettingsInput } from '@/services/galleries.types.ts';
+} from '@/modules/gallery/domain/gallery-access.ts';
+import type { GallerySettingsInput } from '@/modules/gallery/services/galleries.types.ts';
 
 const WHOLE_NUMBER_PATTERN = /^\d+$/;
 const TITLE_ERROR = 'Вкажіть назву галереї';

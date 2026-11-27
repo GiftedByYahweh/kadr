@@ -4,9 +4,9 @@ import { loginRequestSchema, PASSWORD_MIN_LENGTH } from '@kadr/shared';
 import { useMutation } from '@tanstack/vue-query';
 import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useSession } from '@/composables/useSession.ts';
+import { useSession } from '@/modules/auth/composables/useSession.ts';
 import { RouteName } from '@/router/route-names.ts';
-import { authService } from '@/services/auth.service.ts';
+import { authService } from '@/modules/auth/services/auth.service.ts';
 
 const EMAIL_ERROR = 'Введіть коректний email';
 const PASSWORD_ERROR = `Пароль має містити щонайменше ${String(PASSWORD_MIN_LENGTH)} символів`;

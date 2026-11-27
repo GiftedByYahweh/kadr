@@ -3,9 +3,9 @@ import type { AdminGalleryDto } from '@kadr/shared';
 import { AppAlertDialog, AppTextField } from '@kadr/ui';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useGalleryMutation } from '@/composables/useGalleryQueries.ts';
+import { useGalleryMutation } from '@/modules/gallery/composables/useGalleryQueries.ts';
 import { RouteName } from '@/router/route-names.ts';
-import { galleriesService } from '@/services/galleries.service.ts';
+import { galleriesService } from '@/modules/gallery/services/galleries.service.ts';
 
 const { gallery } = defineProps<{ gallery: AdminGalleryDto }>();
 const emit = defineEmits<{ close: [] }>();

@@ -2,15 +2,15 @@
 import type { AdminGalleryDto } from '@kadr/shared';
 import { AppFormDialog } from '@kadr/ui';
 import { computed, ref } from 'vue';
-import { useGalleryMutation } from '@/composables/useGalleryQueries.ts';
-import { galleriesService } from '@/services/galleries.service.ts';
+import { useGalleryMutation } from '@/modules/gallery/composables/useGalleryQueries.ts';
+import { galleriesService } from '@/modules/gallery/services/galleries.service.ts';
 import AccessTermField from './AccessTermField.vue';
 import {
   accessTermExpiry,
   defaultAccessTerm,
   isAccessTermComplete,
-} from './gallery-access.ts';
-import { accessText } from './gallery-display.ts';
+} from '@/modules/gallery/domain/gallery-access.ts';
+import { accessText } from '@/modules/gallery/domain/gallery-display.ts';
 
 const { gallery } = defineProps<{ gallery: AdminGalleryDto }>();
 const emit = defineEmits<{ close: [] }>();

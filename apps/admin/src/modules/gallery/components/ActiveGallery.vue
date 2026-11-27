@@ -7,18 +7,18 @@ import {
   AppTabs,
 } from '@kadr/ui';
 import { computed, ref } from 'vue';
-import DeleteGalleryDialog from '@/components/features/galleries/DeleteGalleryDialog.vue';
-import GalleryFormDialog from '@/components/features/galleries/GalleryFormDialog.vue';
-import GalleryHeader from '@/components/features/galleries/GalleryHeader.vue';
-import GallerySummary from '@/components/features/galleries/GallerySummary.vue';
+import DeleteGalleryDialog from './DeleteGalleryDialog.vue';
+import GalleryFormDialog from './GalleryFormDialog.vue';
+import GalleryHeader from './GalleryHeader.vue';
+import GallerySummary from './GallerySummary.vue';
 import {
   GALLERY_ACTIONS,
   GalleryAction,
-} from '@/components/features/galleries/gallery-actions.ts';
-import { accessText } from '@/components/features/galleries/gallery-display.ts';
-import { useCopyText } from '@/composables/useCopyText.ts';
-import { useGalleryMutation } from '@/composables/useGalleryQueries.ts';
-import { galleriesService } from '@/services/galleries.service.ts';
+} from '@/modules/gallery/domain/gallery-actions.ts';
+import { accessText } from '@/modules/gallery/domain/gallery-display.ts';
+import { useCopyText } from '@/shared/composables/useCopyText.ts';
+import { useGalleryMutation } from '@/modules/gallery/composables/useGalleryQueries.ts';
+import { galleriesService } from '@/modules/gallery/services/galleries.service.ts';
 
 const MediaFilter = {
   ALL: 'all',

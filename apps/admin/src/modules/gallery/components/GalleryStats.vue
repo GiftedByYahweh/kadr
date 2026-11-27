@@ -6,7 +6,7 @@ import {
   type AdminGalleryListItemDto,
 } from '@kadr/shared';
 import { computed } from 'vue';
-import { mediaCountText } from './gallery-display.ts';
+import { mediaCountText } from '@/modules/gallery/domain/gallery-display.ts';
 
 const { gallery } = defineProps<{ gallery: AdminGalleryListItemDto }>();
 

@@ -3,13 +3,16 @@ import { Currency, type AdminGalleryDto } from '@kadr/shared';
 import { AppFormDialog, AppSelect, AppTextField } from '@kadr/ui';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useGalleryForm } from '@/composables/useGalleryForm.ts';
-import { useGalleryMutation } from '@/composables/useGalleryQueries.ts';
+import { useGalleryForm } from '@/modules/gallery/composables/useGalleryForm.ts';
+import { useGalleryMutation } from '@/modules/gallery/composables/useGalleryQueries.ts';
 import { RouteName } from '@/router/route-names.ts';
-import { galleriesService } from '@/services/galleries.service.ts';
-import type { GallerySettingsInput } from '@/services/galleries.types.ts';
+import { galleriesService } from '@/modules/gallery/services/galleries.service.ts';
+import type { GallerySettingsInput } from '@/modules/gallery/services/galleries.types.ts';
 import AccessTermField from './AccessTermField.vue';
-import { accessTermOf, defaultAccessTerm } from './gallery-access.ts';
+import {
+  accessTermOf,
+  defaultAccessTerm,
+} from '@/modules/gallery/domain/gallery-access.ts';
 
 const ID_PREFIX = 'gallery-form';
 

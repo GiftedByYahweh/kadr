@@ -6,7 +6,7 @@ import {
   SELECTION_STATE_BADGES,
   SELECTION_STATE_LABELS,
   selectionText,
-} from './gallery-display.ts';
+} from '@/modules/gallery/domain/gallery-display.ts';
 
 const { gallery } = defineProps<{ gallery: AdminGalleryDto }>();
 

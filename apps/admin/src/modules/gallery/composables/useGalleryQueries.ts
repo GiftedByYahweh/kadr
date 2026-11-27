@@ -6,7 +6,7 @@ import {
   useQueryClient,
 } from '@tanstack/vue-query';
 import { computed, type Ref } from 'vue';
-import { galleriesService } from '@/services/galleries.service.ts';
+import { galleriesService } from '@/modules/gallery/services/galleries.service.ts';
 
 const GALLERIES_KEY = 'galleries';
 const GALLERY_PAGE_SIZE = 24;
