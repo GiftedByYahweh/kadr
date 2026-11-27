@@ -8,7 +8,7 @@ export type {
   GalleryListFilter,
   GalleryRepository,
   UpdateGalleryData,
-  UpdateGalleryStatusData,
+  UpdateGalleryTrashData,
 } from './repositories/gallery.repository.ts';
 export { DrizzleGalleryRepository } from './repositories/drizzle-gallery.repository.ts';
 export { ListGalleriesUseCase } from './use-cases/list-galleries.use-case.ts';

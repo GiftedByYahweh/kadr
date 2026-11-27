@@ -1,5 +1,5 @@
 {
-  "id": "a58f70ec-26f5-4d68-a801-c542cd694b9f",
+  "id": "4e6b9e9e-2fd4-4389-93eb-1df91b21a236",
   "prevId": "a692b573-7990-433f-9afd-17b8d6f3cce5",
   "version": "7",
   "dialect": "postgresql",
@@ -171,14 +171,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "gallery_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'active'"
         },
         "expires_at": {
           "name": "expires_at",
@@ -524,14 +516,6 @@
         "UAH",
         "EUR",
         "USD"
-      ]
-    },
-    "public.gallery_status": {
-      "name": "gallery_status",
-      "schema": "public",
-      "values": [
-        "active",
-        "trashed"
       ]
     },
     "public.gallery_media_status": {

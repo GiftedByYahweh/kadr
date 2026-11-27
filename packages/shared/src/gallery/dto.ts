@@ -1,4 +1,3 @@
-import type { GalleryStatus } from './constants.ts';
 import type { Currency } from './types.ts';
 
 export interface ClientGalleryCommentDto {
@@ -30,7 +29,6 @@ export interface ClientGalleryDto {
 export interface AdminGalleryListItemDto {
   id: string;
   title: string;
-  status: GalleryStatus;
   expiresAt: string | null;
   trashedAt: string | null;
   createdAt: string;

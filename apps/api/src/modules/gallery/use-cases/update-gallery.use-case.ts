@@ -1,6 +1,5 @@
 import {
   DomainErrorCode,
-  GalleryStatus,
   type AdminGalleryDto,
   type UpdateGalleryRequest,
 } from '@kadr/shared';
@@ -29,7 +28,7 @@ export class UpdateGalleryUseCase implements UseCase<
       input.userId,
     );
     if (!current) throw new AppError(DomainErrorCode.GALLERY_NOT_FOUND);
-    if (current.status === GalleryStatus.TRASHED) {
+    if (current.trashedAt !== null) {
       throw new AppError(DomainErrorCode.GALLERY_TRASHED);
     }
     if (input.expiresAt && input.expiresAt <= new Date()) {

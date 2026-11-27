@@ -14,7 +14,9 @@ export class CountGalleriesUseCase implements UseCase<
   constructor(private readonly galleryRepository: GalleryRepository) {}
 
   async execute(input: CountGalleriesInput): Promise<AdminGalleryCountsDto> {
-    const counts = await this.galleryRepository.countByStatus(input.userId);
+    const counts = await this.galleryRepository.countActiveAndTrashed(
+      input.userId,
+    );
     return galleryMapper.toAdminCountsDto(counts);
   }
 }

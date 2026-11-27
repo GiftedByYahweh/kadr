@@ -1,8 +1,4 @@
-import {
-  DomainErrorCode,
-  GalleryStatus,
-  type AdminGalleryDto,
-} from '@kadr/shared';
+import { DomainErrorCode, type AdminGalleryDto } from '@kadr/shared';
 import { AppError } from '@common/error/app.error.ts';
 import type { UseCase } from '@common/use-case/use-case.ts';
 import { galleryMapper } from '../mappers/gallery.mapper.ts';
@@ -28,13 +24,12 @@ export class TrashGalleryUseCase implements UseCase<
       input.userId,
     );
     if (!gallery) throw new AppError(DomainErrorCode.GALLERY_NOT_FOUND);
-    if (gallery.status === GalleryStatus.TRASHED) {
+    if (gallery.trashedAt !== null) {
       throw new AppError(DomainErrorCode.GALLERY_TRASHED);
     }
 
     const trashedAt = new Date();
-    await this.galleryRepository.updateStatus(input.id, {
-      status: GalleryStatus.TRASHED,
+    await this.galleryRepository.updateTrash(input.id, {
       trashedAt,
       expiresAt: gallery.expiresAt,
     });
@@ -42,7 +37,6 @@ export class TrashGalleryUseCase implements UseCase<
     return galleryMapper.toAdminDto(
       {
         ...gallery,
-        status: GalleryStatus.TRASHED,
         trashedAt,
       },
       this.galleryUrl,

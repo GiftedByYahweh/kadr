@@ -18,7 +18,7 @@ export class ListGalleriesUseCase implements UseCase<
     const window = pagination.window(input.page, input.pageSize);
     const galleries = await this.galleryRepository.listWithStats({
       userId: input.userId,
-      status: input.status,
+      trashed: input.trashed,
       search: input.search,
       limit: window.limit,
       offset: window.offset,

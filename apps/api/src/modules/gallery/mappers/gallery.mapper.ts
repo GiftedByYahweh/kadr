@@ -26,7 +26,6 @@ export const galleryMapper = {
       userId: row.userId,
       title: row.title,
       shareToken: row.shareToken,
-      status: row.status,
       expiresAt: row.expiresAt,
       trashedAt: row.trashedAt,
       includedCount: row.includedCount,
@@ -51,7 +50,6 @@ export const galleryMapper = {
     return {
       id: gallery.id,
       title: gallery.title,
-      status: gallery.status,
       expiresAt: toIsoOrNull(gallery.expiresAt),
       trashedAt: toIsoOrNull(gallery.trashedAt),
       createdAt: gallery.createdAt.toISOString(),

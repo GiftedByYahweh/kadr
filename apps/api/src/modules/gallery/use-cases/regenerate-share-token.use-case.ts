@@ -1,8 +1,4 @@
-import {
-  DomainErrorCode,
-  GalleryStatus,
-  type AdminGalleryDto,
-} from '@kadr/shared';
+import { DomainErrorCode, type AdminGalleryDto } from '@kadr/shared';
 import { AppError } from '@common/error/app.error.ts';
 import type { TokenService } from '@common/tokens/token-service.ts';
 import type { UseCase } from '@common/use-case/use-case.ts';
@@ -31,7 +27,7 @@ export class RegenerateShareTokenUseCase implements UseCase<
       input.userId,
     );
     if (!gallery) throw new AppError(DomainErrorCode.GALLERY_NOT_FOUND);
-    if (gallery.status === GalleryStatus.TRASHED) {
+    if (gallery.trashedAt !== null) {
       throw new AppError(DomainErrorCode.GALLERY_TRASHED);
     }
 

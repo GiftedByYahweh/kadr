@@ -1,4 +1,4 @@
-import type { Currency, GalleryStatus } from '@kadr/shared';
+import type { Currency } from '@kadr/shared';
 import type {
   Gallery,
   GalleryCounts,
@@ -9,7 +9,6 @@ export interface CreateGalleryData {
   userId: string;
   title: string;
   shareToken: string;
-  status: GalleryStatus;
   expiresAt: Date | null;
   includedCount: number;
   extraPrice: number;
@@ -24,22 +23,21 @@ export interface UpdateGalleryData {
   currency: Currency | undefined;
 }
 
-export interface UpdateGalleryStatusData {
-  status: GalleryStatus;
+export interface UpdateGalleryTrashData {
   trashedAt: Date | null;
   expiresAt: Date | null;
 }
 
 export interface GalleryListFilter {
   userId: string;
-  status: GalleryStatus;
+  trashed: boolean;
   search: string | undefined;
   limit: number;
   offset: number;
 }
 
 export interface GalleryRepository {
-  countByStatus(userId: string): Promise<GalleryCounts>;
+  countActiveAndTrashed(userId: string): Promise<GalleryCounts>;
   listWithStats(filter: GalleryListFilter): Promise<GalleryWithStats[]>;
   findOwnedWithStats(
     id: string,
@@ -48,7 +46,7 @@ export interface GalleryRepository {
   create(data: CreateGalleryData): Promise<Gallery>;
   update(id: string, data: UpdateGalleryData): Promise<void>;
   updateShareToken(id: string, shareToken: string): Promise<void>;
-  updateStatus(id: string, data: UpdateGalleryStatusData): Promise<void>;
+  updateTrash(id: string, data: UpdateGalleryTrashData): Promise<void>;
   findMediaKeys(galleryId: string): Promise<string[]>;
   delete(id: string): Promise<void>;
 }

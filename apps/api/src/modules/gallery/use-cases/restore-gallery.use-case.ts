@@ -1,6 +1,5 @@
 import {
   DomainErrorCode,
-  GalleryStatus,
   type AdminGalleryDto,
   type RestoreGalleryRequest,
 } from '@kadr/shared';
@@ -29,7 +28,7 @@ export class RestoreGalleryUseCase implements UseCase<
       input.userId,
     );
     if (!gallery) throw new AppError(DomainErrorCode.GALLERY_NOT_FOUND);
-    if (gallery.status === GalleryStatus.ACTIVE) {
+    if (gallery.trashedAt === null) {
       return galleryMapper.toAdminDto(gallery, this.galleryUrl);
     }
 
@@ -43,8 +42,7 @@ export class RestoreGalleryUseCase implements UseCase<
 
     const expiresAt =
       input.expiresAt === undefined ? gallery.expiresAt : input.expiresAt;
-    await this.galleryRepository.updateStatus(input.id, {
-      status: GalleryStatus.ACTIVE,
+    await this.galleryRepository.updateTrash(input.id, {
       trashedAt: null,
       expiresAt,
     });
@@ -52,7 +50,6 @@ export class RestoreGalleryUseCase implements UseCase<
     return galleryMapper.toAdminDto(
       {
         ...gallery,
-        status: GalleryStatus.ACTIVE,
         trashedAt: null,
         expiresAt,
       },

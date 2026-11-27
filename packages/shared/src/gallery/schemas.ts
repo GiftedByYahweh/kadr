@@ -4,7 +4,6 @@ import {
   GALLERY_INCLUDED_COUNT_MAX,
   GALLERY_LIST_PAGE_SIZE_MAX,
   GALLERY_TITLE_MAX_LENGTH,
-  GalleryStatus,
 } from './constants.ts';
 import { Currency } from './types.ts';
 
@@ -31,7 +30,7 @@ export const galleryIdParamsSchema = z.object({
 });
 
 export const listGalleriesQuerySchema = z.object({
-  status: z.enum(GalleryStatus),
+  trashed: z.stringbool(),
   search: z.string().trim().max(GALLERY_TITLE_MAX_LENGTH).optional(),
   page: z.coerce.number().int().min(1),
   pageSize: z.coerce.number().int().min(1).max(GALLERY_LIST_PAGE_SIZE_MAX),

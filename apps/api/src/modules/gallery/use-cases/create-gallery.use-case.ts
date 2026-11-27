@@ -1,6 +1,5 @@
 import {
   DomainErrorCode,
-  GalleryStatus,
   type AdminGalleryDto,
   type CreateGalleryRequest,
 } from '@kadr/shared';
@@ -35,7 +34,6 @@ export class CreateGalleryUseCase implements UseCase<
       userId: input.userId,
       title: input.title,
       shareToken,
-      status: GalleryStatus.ACTIVE,
       expiresAt: input.expiresAt,
       includedCount: input.includedCount,
       extraPrice: input.extraPrice,

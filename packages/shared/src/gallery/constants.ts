@@ -1,10 +1,3 @@
-export const GalleryStatus = {
-  ACTIVE: 'active',
-  TRASHED: 'trashed',
-} as const;
-
-export type GalleryStatus = (typeof GalleryStatus)[keyof typeof GalleryStatus];
-
 export const GalleryMediaStatus = {
   UPLOADING: 'uploading',
   READY: 'ready',

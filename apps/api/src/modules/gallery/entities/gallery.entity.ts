@@ -1,11 +1,10 @@
-import type { Currency, GalleryStatus } from '@kadr/shared';
+import type { Currency } from '@kadr/shared';
 
 export interface Gallery {
   id: string;
   userId: string;
   title: string;
   shareToken: string;
-  status: GalleryStatus;
   expiresAt: Date | null;
   trashedAt: Date | null;
   includedCount: number;
@@ -21,4 +20,7 @@ export interface GalleryWithStats extends Gallery {
   likedCount: number;
 }
 
-export type GalleryCounts = Record<GalleryStatus, number>;
+export interface GalleryCounts {
+  active: number;
+  trashed: number;
+}

@@ -1,5 +1,5 @@
-import { GalleryMediaStatus, GalleryStatus } from '@kadr/shared';
-import { and, count, desc, eq, isNotNull, sql, type SQL } from 'drizzle-orm';
+import { GalleryMediaStatus } from '@kadr/shared';
+import { and, desc, eq, isNotNull, isNull, sql, type SQL } from 'drizzle-orm';
 import type { DbProvider } from '@db/db.provider.ts';
 import { firstRowOrThrow } from '@db/helpers.ts';
 import type {
@@ -15,7 +15,7 @@ import type {
   GalleryListFilter,
   GalleryRepository,
   UpdateGalleryData,
-  UpdateGalleryStatusData,
+  UpdateGalleryTrashData,
 } from './gallery.repository.ts';
 
 export class DrizzleGalleryRepository implements GalleryRepository {
@@ -39,7 +39,9 @@ export class DrizzleGalleryRepository implements GalleryRepository {
       : undefined;
     const conditions = and(
       eq(galleriesTable.userId, filter.userId),
-      eq(galleriesTable.status, filter.status),
+      filter.trashed
+        ? isNotNull(galleriesTable.trashedAt)
+        : isNull(galleriesTable.trashedAt),
       titleMatches,
     );
     const rows = await this.selectWithStats()
@@ -50,22 +52,22 @@ export class DrizzleGalleryRepository implements GalleryRepository {
     return rows.map((row) => galleryMapper.toEntityWithStats(row));
   }
 
-  async countByStatus(userId: string): Promise<GalleryCounts> {
+  async countActiveAndTrashed(userId: string): Promise<GalleryCounts> {
     const rows = await this.db
       .current()
-      .select({ status: galleriesTable.status, total: count() })
+      .select({
+        active:
+          sql<number>`count(*) filter (where ${isNull(galleriesTable.trashedAt)})`.mapWith(
+            Number,
+          ),
+        trashed:
+          sql<number>`count(*) filter (where ${isNotNull(galleriesTable.trashedAt)})`.mapWith(
+            Number,
+          ),
+      })
       .from(galleriesTable)
-      .where(eq(galleriesTable.userId, userId))
-      .groupBy(galleriesTable.status);
-
-    const counts: GalleryCounts = {
-      [GalleryStatus.ACTIVE]: 0,
-      [GalleryStatus.TRASHED]: 0,
-    };
-    for (const row of rows) {
-      counts[row.status] = row.total;
-    }
-    return counts;
+      .where(eq(galleriesTable.userId, userId));
+    return firstRowOrThrow(rows);
   }
 
   async create(data: CreateGalleryData): Promise<Gallery> {
@@ -93,7 +95,7 @@ export class DrizzleGalleryRepository implements GalleryRepository {
       .where(eq(galleriesTable.id, id));
   }
 
-  async updateStatus(id: string, data: UpdateGalleryStatusData): Promise<void> {
+  async updateTrash(id: string, data: UpdateGalleryTrashData): Promise<void> {
     await this.db
       .current()
       .update(galleriesTable)
