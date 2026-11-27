@@ -4,38 +4,43 @@ import {
   AuthGuard,
   authRoutes,
   CreateUserUseCase,
+  DrizzleSessionRepository,
+  DrizzleUserRepository,
   GetCurrentUserUseCase,
   LoginUseCase,
   LogoutUseCase,
   SetUserPasswordUseCase,
 } from '@modules/auth/index.ts';
 import type { InfrastructureContainer } from './infrastructure.container.ts';
-import type { Repositories } from './repositories.container.ts';
 
 export function initAuthContainer(
   config: AppConfig,
   infrastructure: InfrastructureContainer,
-  repositories: Repositories,
 ) {
+  const userRepository = new DrizzleUserRepository(infrastructure.dbProvider);
+  const sessionRepository = new DrizzleSessionRepository(
+    infrastructure.dbProvider,
+  );
+
   const login = new LoginUseCase(
-    repositories.user,
-    repositories.session,
+    userRepository,
+    sessionRepository,
     infrastructure.passwordHasher,
     infrastructure.tokenService,
   );
-  const logout = new LogoutUseCase(repositories.session);
+  const logout = new LogoutUseCase(sessionRepository);
   const authenticateSession = new AuthenticateSessionUseCase(
-    repositories.session,
+    sessionRepository,
     infrastructure.tokenService,
   );
-  const getCurrentUser = new GetCurrentUserUseCase(repositories.user);
+  const getCurrentUser = new GetCurrentUserUseCase(userRepository);
   const createUser = new CreateUserUseCase(
-    repositories.user,
+    userRepository,
     infrastructure.passwordHasher,
   );
   const setUserPassword = new SetUserPasswordUseCase(
-    repositories.user,
-    repositories.session,
+    userRepository,
+    sessionRepository,
     infrastructure.passwordHasher,
     infrastructure.uow,
   );

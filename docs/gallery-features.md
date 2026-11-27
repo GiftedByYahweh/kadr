@@ -82,8 +82,8 @@ The client can:
   current likes differ from it ("changed after submit, not confirmed yet").
   **Planned, not implemented yet.**
 - **After expiry** the gallery link is fully blocked for the client.
-- **Trash instead of archive.** A gallery has two statuses: `active` and
-  `trashed`. "Move to trash" turns the client link off and keeps everything
+- **Trash instead of archive.** A gallery is in the trash when `trashed_at`
+  is set; there is no status column. "Move to trash" turns the client link off and keeps everything
   (rows and files) for **30 days**; during that time the gallery can be
   restored. After 30 days a cron job deletes it completely: rows and files in
   storage. "Delete permanently" is available both for an active gallery and for
@@ -117,11 +117,11 @@ The client can:
 users ──< galleries ──< gallery_media ──< gallery_comments
 ```
 
-- `galleries`: `user_id`, `title`, `share_token`, `status`
-  (`active` / `trashed`), `trashed_at` (start of the 30-day countdown),
-  `expires_at`, `included_count`, `extra_price`, `selection_submitted_at`.
-  The schema still has `archived` and no `trashed_at`: to be changed with a
-  migration together with the gallery API.
+- `galleries`: `user_id`, `title`, `share_token`, `trashed_at` (`null` =
+  active, otherwise in the trash and the start of the 30-day countdown),
+  `expires_at`, `included_count`, `extra_price`, `currency`,
+  `selection_submitted_at`. Client-side states shown in the admin (not viewed,
+  selecting, submitted, expired) are computed from these dates, not stored.
 - `gallery_media`: `original_name`, `storage_key`, `preview_key`, `status`
   (`uploading` / `ready` / `failed`), `content_type`, `size_bytes`, `width`,
   `height`, `taken_at`, `position`, `liked_at` (`null` = not liked),

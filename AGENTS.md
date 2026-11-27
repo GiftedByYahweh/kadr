@@ -167,16 +167,18 @@ export class TogglePhotoLikeUseCase implements UseCase<
 }
 ```
 
-- Each module is assembled in `src/container/<feature>.container.ts` (`init<Feature>Container`): it creates the module's use cases, guards and the routes plugin, and returns only what others need: `routes` for the server, the guard for other modules, use cases used by CLI scripts. Route plugins receive their use cases through options and call `<useCase>.execute(input)`:
+- Each module is assembled in `src/container/<feature>.container.ts` (`init<Feature>Container`): it creates the module's repositories, use cases, guards and the routes plugin, and returns only what others need: `routes` for the server, the guard for other modules, use cases used by CLI scripts. Route plugins receive their use cases through options and call `<useCase>.execute(input)`:
 
 ```ts
 export function initGalleryContainer(
   config: AppConfig,
   infrastructure: InfrastructureContainer,
-  repositories: Repositories,
   authGuard: AuthGuard,
 ) {
-  const togglePhotoLike = new TogglePhotoLikeUseCase(repositories.gallery);
+  const galleryRepository = new DrizzleGalleryRepository(
+    infrastructure.dbProvider,
+  );
+  const togglePhotoLike = new TogglePhotoLikeUseCase(galleryRepository);
   const routes = galleryRoutes({ togglePhotoLike, authGuard });
 
   return { routes };
@@ -221,7 +223,7 @@ export function initGalleryContainer(
 - Route schemas live in `*.schema.ts`, never inline in handlers.
 - Env variables are read only in `src/config.ts` via `requireEnv` from `@kadr/shared` (also used in Vite configs); the rest of the code receives `AppConfig`.
 - Logging goes through the `Logger` port (`src/logger/`); Fastify's built-in logger is off.
-- Manual DI in `src/container/`: `infrastructure.container.ts`, `repositories.container.ts`, `<feature>.container.ts` (one module: use cases, guards, routes), `app.container.ts` (all modules + `routes` list).
+- Manual DI in `src/container/`: `infrastructure.container.ts`, `<feature>.container.ts` (one module: its repositories, use cases, guards, routes), `app.container.ts` (all modules + `routes` list). A repository another module needs is returned by its owner's container, like a guard.
 - Mappers (`mappers/<name>.mapper.ts`) export one object `<name>Mapper` with plain methods for two jobs:
   - DB row -> entity (`galleryMapper.toEntity(row)`), used only by `drizzle-*.repository.ts`;
   - entity -> DTO from `@kadr/shared` (`toAdminGalleryDto`, `toClientGalleryDto`): dates to ISO strings, storage keys to URLs, computed fields. Fields are picked deliberately per consumer instead of copying the whole entity. Entities are never returned from the API directly.

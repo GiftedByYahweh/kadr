@@ -5,7 +5,7 @@ import { AuthGuard } from '../guards/auth.guard.ts';
 import type { GetCurrentUserUseCase } from '../use-cases/get-current-user.use-case.ts';
 import type { LoginUseCase } from '../use-cases/login.use-case.ts';
 import type { LogoutUseCase } from '../use-cases/logout.use-case.ts';
-import { loginRouteSchema } from './auth.schema.ts';
+import { authRouteSchemas } from './auth.schema.ts';
 import { clearSessionCookie, setSessionCookie } from './session-cookie.ts';
 
 export interface AuthRoutesOptions {
@@ -26,7 +26,7 @@ export function authRoutes(
     server.post(
       AdminApiRoutes.auth.login,
       {
-        schema: loginRouteSchema,
+        schema: authRouteSchemas.login,
         config: { rateLimit: LOGIN_RATE_LIMIT },
       },
       async (request, reply): Promise<CurrentUserDto> => {

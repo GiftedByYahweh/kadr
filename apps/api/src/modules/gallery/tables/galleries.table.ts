@@ -1,4 +1,4 @@
-import { GalleryStatus } from '@kadr/shared';
+import { Currency } from '@kadr/shared';
 import {
   index,
   integer,
@@ -11,10 +11,7 @@ import {
 import { pgEnumValues } from '@db/pg-enum-values.ts';
 import { usersTable } from '@modules/auth/tables/users.table.ts';
 
-export const galleryStatusEnum = pgEnum(
-  'gallery_status',
-  pgEnumValues(GalleryStatus),
-);
+export const currencyEnum = pgEnum('currency', pgEnumValues(Currency));
 
 export const galleriesTable = pgTable(
   'galleries',
@@ -25,10 +22,11 @@ export const galleriesTable = pgTable(
       .references(() => usersTable.id, { onDelete: 'cascade' }),
     title: text('title').notNull(),
     shareToken: text('share_token').notNull().unique(),
-    status: galleryStatusEnum('status').notNull().default(GalleryStatus.ACTIVE),
     expiresAt: timestamp('expires_at', { withTimezone: true }),
     includedCount: integer('included_count').notNull(),
     extraPrice: integer('extra_price').notNull(),
+    currency: currencyEnum('currency').notNull(),
+    trashedAt: timestamp('trashed_at', { withTimezone: true }),
     selectionSubmittedAt: timestamp('selection_submitted_at', {
       withTimezone: true,
     }),
