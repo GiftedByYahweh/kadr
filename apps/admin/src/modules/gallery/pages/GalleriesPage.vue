@@ -2,13 +2,13 @@
 import { GALLERY_TRASH_RETENTION_DAYS } from '@kadr/shared';
 import { AppEmptyState, AppTabs } from '@kadr/ui';
 import { computed, ref } from 'vue';
-import GalleryCard from '@/components/features/galleries/GalleryCard.vue';
-import GalleryFormDialog from '@/components/features/galleries/GalleryFormDialog.vue';
-import { useDebouncedRef } from '@/composables/useDebouncedRef.ts';
+import GalleryCard from '@/modules/gallery/components/GalleryCard.vue';
+import GalleryFormDialog from '@/modules/gallery/components/GalleryFormDialog.vue';
+import { useDebouncedRef } from '@/shared/composables/useDebouncedRef.ts';
 import {
   useGalleryCounts,
   useGalleryList,
-} from '@/composables/useGalleryQueries.ts';
+} from '@/modules/gallery/composables/useGalleryQueries.ts';
 
 const SEARCH_DEBOUNCE_MS = 300;
 

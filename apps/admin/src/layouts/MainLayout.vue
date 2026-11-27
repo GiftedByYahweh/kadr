@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router';
-import { useSession } from '@/composables/useSession.ts';
+import { useSession } from '@/modules/auth/composables/useSession.ts';
 import { RouteName } from '@/router/route-names.ts';
-import { authService } from '@/services/auth.service.ts';
+import { authService } from '@/modules/auth/services/auth.service.ts';
 
 const session = useSession();
 const router = useRouter();

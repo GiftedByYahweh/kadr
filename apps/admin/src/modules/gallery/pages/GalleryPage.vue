@@ -2,9 +2,9 @@
 import { AppEmptyState } from '@kadr/ui';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import ActiveGallery from '@/components/widgets/ActiveGallery.vue';
-import TrashedGallery from '@/components/widgets/TrashedGallery.vue';
-import { useGallery } from '@/composables/useGalleryQueries.ts';
+import ActiveGallery from '@/modules/gallery/components/ActiveGallery.vue';
+import TrashedGallery from '@/modules/gallery/components/TrashedGallery.vue';
+import { useGallery } from '@/modules/gallery/composables/useGalleryQueries.ts';
 import { RouteName } from '@/router/route-names.ts';
 
 const route = useRoute();

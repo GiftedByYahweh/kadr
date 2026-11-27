@@ -7,7 +7,7 @@ import {
   type ApiResponse,
 } from '@kadr/shared';
 import { http } from '@kadr/shared/http';
-import { GENERIC_ERROR_MESSAGE } from './error-messages.ts';
+import { GENERIC_ERROR_MESSAGE } from '@/shared/services/error-messages.ts';
 import type {
   DeleteGalleryInput,
   GalleryListQuery,

@@ -7,7 +7,7 @@ import {
   type LoginRequest,
 } from '@kadr/shared';
 import { http } from '@kadr/shared/http';
-import { GENERIC_ERROR_MESSAGE } from './error-messages.ts';
+import { GENERIC_ERROR_MESSAGE } from '@/shared/services/error-messages.ts';
 
 const LOGIN_ERROR_MESSAGES: Partial<Record<number, string>> = {
   [DomainErrorCode.INVALID_CREDENTIALS]: 'Невірний email або пароль',

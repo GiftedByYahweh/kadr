@@ -1,6 +1,6 @@
 import type { NavigationGuard } from 'vue-router';
-import { useSession } from '@/composables/useSession.ts';
-import { RouteName } from './route-names.ts';
+import { useSession } from '@/modules/auth/composables/useSession.ts';
+import { RouteName } from '@/router/route-names.ts';
 
 export const authGuard: NavigationGuard = async (to) => {
   const session = useSession();

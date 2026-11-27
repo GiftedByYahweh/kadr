@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { formatDate, type AdminGalleryDto } from '@kadr/shared';
 import { computed, ref } from 'vue';
-import DeleteGalleryDialog from '@/components/features/galleries/DeleteGalleryDialog.vue';
-import GalleryHeader from '@/components/features/galleries/GalleryHeader.vue';
-import GalleryStats from '@/components/features/galleries/GalleryStats.vue';
-import RestoreGalleryDialog from '@/components/features/galleries/RestoreGalleryDialog.vue';
-import { isExpired } from '@/components/features/galleries/gallery-access.ts';
+import DeleteGalleryDialog from './DeleteGalleryDialog.vue';
+import GalleryHeader from './GalleryHeader.vue';
+import GalleryStats from './GalleryStats.vue';
+import RestoreGalleryDialog from './RestoreGalleryDialog.vue';
+import { isExpired } from '@/modules/gallery/domain/gallery-access.ts';
 import {
   accessText,
   deletionDate,
-} from '@/components/features/galleries/gallery-display.ts';
-import { useGalleryMutation } from '@/composables/useGalleryQueries.ts';
-import { galleriesService } from '@/services/galleries.service.ts';
+} from '@/modules/gallery/domain/gallery-display.ts';
+import { useGalleryMutation } from '@/modules/gallery/composables/useGalleryQueries.ts';
+import { galleriesService } from '@/modules/gallery/services/galleries.service.ts';
 
 const { gallery } = defineProps<{ gallery: AdminGalleryDto }>();
 

@@ -8,7 +8,7 @@ import {
   accessTermExpiry,
   toDateInput,
   type AccessTermValue,
-} from './gallery-access.ts';
+} from '@/modules/gallery/domain/gallery-access.ts';
 
 const { idPrefix, error = '' } = defineProps<{
   idPrefix: string;

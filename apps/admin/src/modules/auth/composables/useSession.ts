@@ -1,6 +1,6 @@
 import type { CurrentUserDto } from '@kadr/shared';
 import { readonly, ref } from 'vue';
-import { authService } from '@/services/auth.service.ts';
+import { authService } from '@/modules/auth/services/auth.service.ts';
 
 const currentUser = ref<CurrentUserDto | null>(null);
 let sessionRequest: Promise<void> | null = null;

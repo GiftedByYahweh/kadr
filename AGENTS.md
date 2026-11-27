@@ -275,10 +275,27 @@ export function initGalleryContainer(
 
 ### 5.1 Layers
 
-- `src/services/` — business operations: call the API through the shared same-origin `http` from `@kadr/shared/http` with the app's zone routes (`AdminApiRoutes` in admin, `GalleryApiRoutes` in gallery), map error codes to user-friendly errors. No separate `api/` layer.
-- `src/composables/` — shared reactive state and logic.
-- `src/components/` — `shared/`, `features/`, `widgets/`.
-- `src/layouts/`, `src/pages/`, `src/router/` (admin only; gallery is a single page without vue-router and reads the gallery token from `location.pathname`).
+`apps/admin` is split into feature modules:
+
+```
+src/
+├── main.ts, App.vue
+├── router/              # routes, route names; wires modules together
+├── layouts/             # app shells (MainLayout, AuthLayout)
+├── shared/              # code used by several modules (composables, services)
+├── styles/
+└── modules/<feature>/
+    ├── domain/          # pure TypeScript: rules, formatting, constants; no Vue, no API
+    ├── services/        # API calls + request/response types
+    ├── composables/     # queries, mutations, form state
+    ├── components/      # the module's Vue components
+    └── pages/           # route pages
+```
+
+- `services/` call the API through the shared same-origin `http` from `@kadr/shared/http` with the app's zone routes (`AdminApiRoutes` in admin, `GalleryApiRoutes` in gallery), map error codes to user-friendly errors. No separate `api/` layer.
+- A module never imports another module; shared code goes to `src/shared/`. Only `router/` and `layouts/` may import from several modules.
+- Imports inside one folder are relative (`./x.ts`); everything else uses the `@/` alias.
+- `apps/gallery` is a single page without vue-router (reads the gallery token from `location.pathname`) and keeps the flat layout: `src/services/`, `src/composables/`, `src/components/` (`shared/`, `features/`, `widgets/`), `src/pages/`.
 
 ### 5.2 State
 

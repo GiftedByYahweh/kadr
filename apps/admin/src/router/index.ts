@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { authGuard } from './auth.guard.ts';
+import { authGuard } from '@/modules/auth/auth.guard.ts';
 import { RouteName } from './route-names.ts';
 
 export const router = createRouter({
@@ -13,7 +13,7 @@ export const router = createRouter({
         {
           path: '',
           name: RouteName.LOGIN,
-          component: () => import('@/pages/LoginPage.vue'),
+          component: () => import('@/modules/auth/pages/LoginPage.vue'),
         },
       ],
     },
@@ -25,12 +25,12 @@ export const router = createRouter({
         {
           path: 'galleries',
           name: RouteName.GALLERIES,
-          component: () => import('@/pages/GalleriesPage.vue'),
+          component: () => import('@/modules/gallery/pages/GalleriesPage.vue'),
         },
         {
           path: 'galleries/:id',
           name: RouteName.GALLERY,
-          component: () => import('@/pages/GalleryPage.vue'),
+          component: () => import('@/modules/gallery/pages/GalleryPage.vue'),
         },
       ],
     },
