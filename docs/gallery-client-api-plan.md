@@ -39,12 +39,11 @@ Add the paths to `GalleryApiRoutes` (`packages/shared/src/api/routes/gallery.ts`
 it is empty now) in the same style as `AdminApiRoutes`: a `GALLERY_API_PREFIX`
 built from `API_PREFIX`, full paths, no strings anywhere else.
 
-| Method   | Path                                          | What it does  |
-| -------- | --------------------------------------------- | ------------- |
-| `GET`    | `/api/gallery/:token`                         | The gallery   |
-| `PUT`    | `/api/gallery/:token/media/:mediaId/like`     | Like a photo  |
-| `DELETE` | `/api/gallery/:token/media/:mediaId/like`     | Remove a like |
-| `POST`   | `/api/gallery/:token/media/:mediaId/comments` | Add a comment |
+| Method   | Path                                          | What it does      |
+| -------- | --------------------------------------------- | ----------------- |
+| `GET`    | `/api/gallery/:token`                         | The gallery       |
+| `POST`    | `/api/gallery/:token/media/:mediaId/like`    | Toggle photo like |
+| `POST`   | `/api/gallery/:token/media/:mediaId/comments` | Add a comment     |
 
 One route = one use case: `GetClientGalleryUseCase`, `LikeMediaUseCase`,
 `UnlikeMediaUseCase`, `AddMediaCommentUseCase`.
