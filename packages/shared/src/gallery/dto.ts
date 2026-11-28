@@ -1,3 +1,4 @@
+import type { MediaStatus } from '../media/index.ts';
 import type { Currency } from './types.ts';
 
 export interface ClientGalleryCommentDto {
@@ -53,4 +54,19 @@ export interface AdminGalleryListPageDto {
 export interface AdminGalleryCountsDto {
   active: number;
   trashed: number;
+}
+
+export interface MediaUploadTargetDto {
+  mediaId: string;
+  uploadUrl: string;
+}
+
+export interface AdminGalleryMediaDto {
+  id: string;
+  originalName: string;
+  status: MediaStatus;
+  position: number;
+  isCover: boolean;
+  likedAt: string | null;
+  createdAt: string;
 }

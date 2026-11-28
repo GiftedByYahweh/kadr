@@ -1,4 +1,4 @@
-import { GalleryMediaStatus } from '@kadr/shared';
+import { MediaStatus } from '@kadr/shared';
 import { and, desc, eq, isNotNull, isNull, sql, type SQL } from 'drizzle-orm';
 import type { DbProvider } from '@db/db.provider.ts';
 import { firstRowOrThrow } from '@db/helpers.ts';
@@ -116,11 +116,11 @@ export class DrizzleGalleryRepository implements GalleryRepository {
       .select({
         gallery: galleriesTable,
         mediaCount: DrizzleGalleryRepository.countMediaWhere(
-          eq(galleryMediaTable.status, GalleryMediaStatus.READY),
+          eq(galleryMediaTable.status, MediaStatus.READY),
         ),
         likedCount: DrizzleGalleryRepository.countMediaWhere(
           and(
-            eq(galleryMediaTable.status, GalleryMediaStatus.READY),
+            eq(galleryMediaTable.status, MediaStatus.READY),
             isNotNull(galleryMediaTable.likedAt),
           ),
         ),

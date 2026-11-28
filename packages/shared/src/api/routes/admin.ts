@@ -18,5 +18,7 @@ export const AdminApiRoutes = {
     trash: `${ADMIN_GALLERY}/trash`,
     restore: `${ADMIN_GALLERY}/restore`,
     shareToken: `${ADMIN_GALLERY}/share-token`,
+    media: `${ADMIN_GALLERY}/media`,
+    mediaUploads: `${ADMIN_GALLERY}/media/uploads`,
   },
 } as const;

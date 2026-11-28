@@ -5,6 +5,15 @@ export const MediaType = {
 
 export type MediaType = (typeof MediaType)[keyof typeof MediaType];
 
+export const MediaStatus = {
+  UPLOADING: 'uploading',
+  PROCESSING: 'processing',
+  READY: 'ready',
+  FAILED: 'failed',
+} as const;
+
+export type MediaStatus = (typeof MediaStatus)[keyof typeof MediaStatus];
+
 export const IMAGE_CONTENT_TYPES = [
   'image/jpeg',
   'image/png',

@@ -1,19 +1,43 @@
 import type { AppConfig } from '@config';
 import type { AuthGuard } from '@modules/auth/index.ts';
 import {
+  ConfirmMediaUploadsUseCase,
   CountGalleriesUseCase,
   CreateGalleryUseCase,
   DeleteGalleryUseCase,
+  DrizzleGalleryMediaRepository,
   DrizzleGalleryRepository,
   galleryRoutes,
   GetGalleryUseCase,
   ListGalleriesUseCase,
   RegenerateShareTokenUseCase,
   RestoreGalleryUseCase,
+  StartMediaUploadsUseCase,
   TrashGalleryUseCase,
   UpdateGalleryUseCase,
 } from '@modules/gallery/index.ts';
+import type { GalleryRepository } from '@modules/gallery/index.ts';
 import type { InfrastructureContainer } from './infrastructure.container.ts';
+
+function initMediaUseCases(
+  infrastructure: InfrastructureContainer,
+  galleryRepository: GalleryRepository,
+) {
+  const galleryMediaRepository = new DrizzleGalleryMediaRepository(
+    infrastructure.dbProvider,
+  );
+  const startMediaUploads = new StartMediaUploadsUseCase(
+    galleryRepository,
+    galleryMediaRepository,
+    infrastructure.fileStorage,
+  );
+  const confirmMediaUploads = new ConfirmMediaUploadsUseCase(
+    galleryRepository,
+    galleryMediaRepository,
+    infrastructure.fileStorage,
+  );
+  return { startMediaUploads, confirmMediaUploads };
+}
 
 export function initGalleryContainer(
   config: AppConfig,
@@ -57,6 +81,11 @@ export function initGalleryContainer(
     infrastructure.fileStorage,
   );
 
+  const { startMediaUploads, confirmMediaUploads } = initMediaUseCases(
+    infrastructure,
+    galleryRepository,
+  );
+
   const routes = galleryRoutes({
     listGalleries,
     countGalleries,
@@ -67,6 +96,8 @@ export function initGalleryContainer(
     trashGallery,
     restoreGallery,
     deleteGallery,
+    startMediaUploads,
+    confirmMediaUploads,
     authGuard,
   });
 
