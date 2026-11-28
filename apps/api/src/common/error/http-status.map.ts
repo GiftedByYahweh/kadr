@@ -30,6 +30,9 @@ export const HTTP_STATUS_BY_APP_ERROR: Record<AppErrorCode, HttpStatusCode> = {
   [DomainErrorCode.GALLERY_RESTORE_NEEDS_EXPIRY]: HttpStatusCode.BAD_REQUEST,
   [DomainErrorCode.GALLERY_TITLE_MISMATCH]: HttpStatusCode.BAD_REQUEST,
   [DomainErrorCode.GALLERY_EXPIRY_IN_PAST]: HttpStatusCode.BAD_REQUEST,
+  [DomainErrorCode.GALLERY_MEDIA_LIMIT]: HttpStatusCode.CONFLICT,
+  [DomainErrorCode.PENDING_UPLOADS_LIMIT]: HttpStatusCode.TOO_MANY_REQUESTS,
+  [DomainErrorCode.MEDIA_UPLOAD_NOT_FOUND]: HttpStatusCode.CONFLICT,
 
   [DomainErrorCode.INVALID_CREDENTIALS]: HttpStatusCode.UNAUTHORIZED,
 };

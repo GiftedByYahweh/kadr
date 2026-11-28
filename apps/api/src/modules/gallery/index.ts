@@ -11,6 +11,7 @@ export type {
   UpdateGalleryTrashData,
 } from './repositories/gallery.repository.ts';
 export { DrizzleGalleryRepository } from './repositories/drizzle-gallery.repository.ts';
+export { DrizzleGalleryMediaRepository } from './repositories/drizzle-gallery-media.repository.ts';
 export { ListGalleriesUseCase } from './use-cases/list-galleries.use-case.ts';
 export type { ListGalleriesInput } from './use-cases/list-galleries.use-case.ts';
 export { CountGalleriesUseCase } from './use-cases/count-galleries.use-case.ts';
@@ -29,4 +30,11 @@ export { RestoreGalleryUseCase } from './use-cases/restore-gallery.use-case.ts';
 export type { RestoreGalleryInput } from './use-cases/restore-gallery.use-case.ts';
 export { DeleteGalleryUseCase } from './use-cases/delete-gallery.use-case.ts';
 export type { DeleteGalleryInput } from './use-cases/delete-gallery.use-case.ts';
+export { StartMediaUploadsUseCase } from './use-cases/start-media-uploads.use-case.ts';
+export type {
+  StartMediaUploadsFile,
+  StartMediaUploadsInput,
+} from './use-cases/start-media-uploads.use-case.ts';
+export { ConfirmMediaUploadsUseCase } from './use-cases/confirm-media-uploads.use-case.ts';
+export type { ConfirmMediaUploadsInput } from './use-cases/confirm-media-uploads.use-case.ts';
 export { galleryRoutes } from './routes/gallery.routes.ts';

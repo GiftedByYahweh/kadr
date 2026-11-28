@@ -1,9 +1,12 @@
 import { z } from 'zod';
+import { IMAGE_CONTENT_TYPES, IMAGE_MAX_SIZE_BYTES } from '../media/index.ts';
 import {
   GALLERY_EXTRA_PRICE_MAX,
   GALLERY_INCLUDED_COUNT_MAX,
   GALLERY_LIST_PAGE_SIZE_MAX,
   GALLERY_TITLE_MAX_LENGTH,
+  MEDIA_NAME_MAX_LENGTH,
+  MEDIA_UPLOAD_BATCH_MAX,
 } from './constants.ts';
 import { Currency } from './types.ts';
 
@@ -52,8 +55,29 @@ export const deleteGalleryQuerySchema = z.object({
   confirmTitle: z.string().max(GALLERY_TITLE_MAX_LENGTH),
 });
 
+const mediaUploadFileSchema = z.object({
+  name: z.string().trim().min(1).max(MEDIA_NAME_MAX_LENGTH),
+  contentType: z.enum(IMAGE_CONTENT_TYPES),
+  sizeBytes: z.int().min(1).max(IMAGE_MAX_SIZE_BYTES),
+});
+
+export const startMediaUploadsRequestSchema = z.object({
+  files: z.array(mediaUploadFileSchema).min(1).max(MEDIA_UPLOAD_BATCH_MAX),
+});
+
+export const confirmMediaUploadsRequestSchema = z.object({
+  mediaIds: z.array(z.uuid()).min(1).max(MEDIA_UPLOAD_BATCH_MAX),
+});
+
 export type ListGalleriesQuery = z.infer<typeof listGalleriesQuerySchema>;
 export type CreateGalleryRequest = z.infer<typeof createGalleryRequestSchema>;
 export type UpdateGalleryRequest = z.infer<typeof updateGalleryRequestSchema>;
 export type RestoreGalleryRequest = z.infer<typeof restoreGalleryRequestSchema>;
 export type DeleteGalleryQuery = z.infer<typeof deleteGalleryQuerySchema>;
+export type MediaUploadFile = z.infer<typeof mediaUploadFileSchema>;
+export type StartMediaUploadsRequest = z.infer<
+  typeof startMediaUploadsRequestSchema
+>;
+export type ConfirmMediaUploadsRequest = z.infer<
+  typeof confirmMediaUploadsRequestSchema
+>;

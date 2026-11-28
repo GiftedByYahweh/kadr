@@ -135,7 +135,7 @@ src/modules/<feature>/
   - use cases (see 4.4);
   - repositories: `DrizzleGalleryRepository implements GalleryRepository`;
   - infrastructure: `DbProvider`, `UnitOfWork`, `AsyncTxContext`, `ConsoleLogger implements Logger`, `Argon2PasswordHasher implements PasswordHasher`, `CryptoTokenService implements TokenService`, file storage, other SDK clients.
-- **A port** is an interface for anything infrastructural a use case depends on: I/O, secrets, cryptography, randomness, external services. Use cases receive ports through the constructor and never import implementations.
+- **A port** is an interface for anything infrastructural a use case depends on: I/O, secrets, cryptography, external services. Use cases receive ports through the constructor and never import implementations. Plain ids are generated inline with `randomUUID()` from `node:crypto`, without a port.
 - **Plain functions for pure deterministic logic**: mappers, `<feature>.service.ts` domain logic, helpers, container wiring.
 - Constants and helpers that belong to one class live inside it as `private static readonly` fields and `private static` methods.
 - No static-only classes. Related functions are grouped into a plain object, e.g. a mapper: `export const galleryMapper = { toEntity(row) {...}, toClientGalleryDto(gallery) {...} }`.

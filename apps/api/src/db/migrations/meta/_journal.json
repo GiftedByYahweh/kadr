@@ -15,6 +15,13 @@
       "when": 1795805108845,
       "tag": "0001_gallery_trash_currency",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795859053027,
+      "tag": "0002_media_status",
+      "breakpoints": false
     }
   ]
 }

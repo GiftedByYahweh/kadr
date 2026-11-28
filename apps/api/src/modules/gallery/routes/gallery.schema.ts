@@ -1,9 +1,11 @@
 import {
+  confirmMediaUploadsRequestSchema,
   createGalleryRequestSchema,
   deleteGalleryQuerySchema,
   galleryIdParamsSchema,
   listGalleriesQuerySchema,
   restoreGalleryRequestSchema,
+  startMediaUploadsRequestSchema,
   updateGalleryRequestSchema,
 } from '@kadr/shared';
 
@@ -16,5 +18,13 @@ export const galleryRouteSchemas = {
   delete: {
     params: galleryIdParamsSchema,
     querystring: deleteGalleryQuerySchema,
+  },
+  startMediaUploads: {
+    params: galleryIdParamsSchema,
+    body: startMediaUploadsRequestSchema,
+  },
+  confirmMediaUploads: {
+    params: galleryIdParamsSchema,
+    body: confirmMediaUploadsRequestSchema,
   },
 };

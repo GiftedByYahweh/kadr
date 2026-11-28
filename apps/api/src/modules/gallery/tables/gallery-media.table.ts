@@ -1,4 +1,4 @@
-import { GalleryMediaStatus } from '@kadr/shared';
+import { MediaStatus } from '@kadr/shared';
 import { sql } from 'drizzle-orm';
 import {
   bigint,
@@ -15,9 +15,9 @@ import {
 import { pgEnumValues } from '@db/pg-enum-values.ts';
 import { galleriesTable } from './galleries.table.ts';
 
-export const galleryMediaStatusEnum = pgEnum(
-  'gallery_media_status',
-  pgEnumValues(GalleryMediaStatus),
+export const mediaStatusEnum = pgEnum(
+  'media_status',
+  pgEnumValues(MediaStatus),
 );
 
 export const galleryMediaTable = pgTable(
@@ -30,9 +30,7 @@ export const galleryMediaTable = pgTable(
     originalName: text('original_name').notNull(),
     storageKey: text('storage_key').notNull().unique(),
     previewKey: text('preview_key'),
-    status: galleryMediaStatusEnum('status')
-      .notNull()
-      .default(GalleryMediaStatus.UPLOADING),
+    status: mediaStatusEnum('status').notNull().default(MediaStatus.UPLOADING),
     contentType: text('content_type').notNull(),
     sizeBytes: bigint('size_bytes', { mode: 'number' }).notNull(),
     width: integer('width'),
